@@ -1,5 +1,5 @@
 ###
-# Module manifest for DIO shared module'
+# Module manifest for shared modules'
 ###
 @{
     ModuleVersion     = '1.5.3.4'
