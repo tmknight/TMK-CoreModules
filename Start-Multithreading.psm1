@@ -48,15 +48,21 @@
     If no value is set, the default of 20 threads will be applied
 
     $MaxThreads = 50     
+
+.PARAMETER NoProgress
+    A switch to disable activity progress.
+    NOTE: When executing in VS-Code, the Write-InlineProgress command from TMK-CoreModules must be present
+
 .NOTES
-	Author: Travis M Knight; tmknight
+	Author: Travis M Knight; tmknight88@gmail.com
 	Date: 2017-03-15: tmknight: Inception
 	Date: 2017-05-03: tmknight: Update notes. Modify how runspace status is tracked.
 	Date: 2017-11-30: tmknight: Update progress to account for VS-Code host.
 	Date: 2018-02-07: tmknight: Added switch to not show progress if desired for silent execution;Paramter verbiage change from LoopObjects to InputObjects.
 	Date: 2018-02-14: tmknight: Add logic to force progress to 100% when all operations complete.
 .LINK
-	https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/26/beginning-use-of-powershell-runspaces-part-1/
+    https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/26/beginning-use-of-powershell-runspaces-part-1/
+    https://github.com/tmknight/TMK-CoreModules
 #>
 
 function Start-Multithreading {
@@ -98,6 +104,7 @@ function Start-Multithreading {
     )
 
     Begin {
+        ## Establish runspace pool
         $RunspaceCollection = @()
         $RunspacePool = [RunspaceFactory]::CreateRunspacePool(1, $MaxThreads)
         $RunspacePool.Open()
@@ -105,6 +112,20 @@ function Start-Multithreading {
         $c = 0
     }
     Process {
+        $ErrorActionPreference = 'SilentlyContinue'
+        switch ($Host.Name) {
+            "Visual Studio Code Host" {
+                if (!(Get-Command -Name Write-InlineProgress) -and $NoProgress -eq $false) {
+                    $NoProgress = $true
+                    $message = "The command Write-InlineProgress is required when executing via VS-Code and does not exist.`n" +
+                    "Please import `"TMK-CoreModules`" from https://github.com/tmknight/TMK-CoreModules. Continuing without progress."
+                    Write-Warning -Message $message
+                    Start-Sleep -Seconds 5
+                }
+            }
+        }
+        $ErrorActionPreference = 'Stop'
+
         ForEach ($obj in $InputObjects) {
             # Create a PowerShell object to run add the script and argument.
             $Powershell = [PowerShell]::Create().AddScript($Scriptblock).AddArgument($obj).AddParameters($Arguments)
@@ -121,6 +142,7 @@ function Start-Multithreading {
 
         $count = $RunspaceCollection.Count
 
+        ## Keep track of open threads and terminate when all have completed
         While ($RunspaceCollection.Count -gt 0) {
             Foreach ($Runspace in $RunspaceCollection.ToArray()) {
                 switch ($NoProgress) {
@@ -149,22 +171,28 @@ function Start-Multithreading {
             }
         }
 
+        ## Force progress to 100% when all threads have completed
         if ($RunspaceCollection.Count -le 0) {
             $c = $count
             $perc = ($c / $count * 100)
-            switch ($Host.Name) {
-                "Visual Studio Code Host" {
-                    Write-InlineProgress -Activity "$c of $count threads completed" `
-                        -PercentComplete $perc
-                }
-                default {
-                    Write-Progress -Activity "Executing.." `
-                        -PercentComplete $perc `
-                        -Status "$c of $count threads completed"
+            switch ($NoProgress) {
+                $false {
+                    switch ($Host.Name) {
+                        "Visual Studio Code Host" {
+                            Write-InlineProgress -Activity "$c of $count threads completed" `
+                                -PercentComplete $perc
+                        }
+                        default {
+                            Write-Progress -Activity "Executing.." `
+                                -PercentComplete $perc `
+                                -Status "$c of $count threads completed"
+                        }
+                    }
                 }
             }
         }
         
+        ## Move the cursor to the next line, particularly for Write-InlineProgress module
         $RunspaceCollection.Clear()
         switch ($Host.Name) {
             "Visual Studio Code Host" {
