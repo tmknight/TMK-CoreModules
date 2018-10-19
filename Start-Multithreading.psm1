@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-   Module for multi-threading using runspaces
+    Module for multi-threading using runspaces
 .DESCRIPTION
-   Use this module to perform multi-threading of scripting on large target sets
+    Use this module to perform multi-threading of scripting on large target sets
 .EXAMPLE
-	Start-Multithreading -ScriptBlock $ScriptBlock -InputObjects $InputObjects -Arguments $Arguments
+	Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -Arguments $Arguments
 
     Source        Destination     IPV4Address      IPV6Address                              Bytes    Time(ms)
     ------        -----------     -----------      -----------                              -----    --------
@@ -15,31 +15,47 @@
 	Description
 	-----------
 	Using a script block to ping a list of machines one time
-.PARAMETER InputObjects
+.PARAMETER InputObject
 	This parameter is manadatory and must be in the form of an array containing
     the object(s) on which to execute the ScriptBlock.
 
-    $InputObjects = import-csv c:\temp\list-of-pcs.csv
+        $InputObject = import-csv c:\temp\list-of-pcs.csv
 .PARAMETER Arguments 
-	This parameter is not mandatory, though it must be in the form of a hashtable with 
-    each parameter required by your script being in the order that they
+    This parameter is not mandatory, though it must be in one of the following forms:
+    
+    A comma-separated list of variables in the order that they
     are called by the script.
 
-    $Arguments = @{
-        count = 1
-    }
+        $count = 1
+        $list  = "one","two","Three"
+
+        Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -Arguments $count, $list
+
+    A hashtable with each parameter required by your script being in the order that they
+    are called by the script.
+
+        $count = 1
+        $list = "one","two","Three"
+
+        $Arguments = @{
+            count = $count
+            list  = $list
+        }
+
+        Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -Arguments $Arguments
 .PARAMETER ScriptBlock 
 	This paramater is mandatory and is where you will place your code to loop through. The loop object
     should be the first parameter.
     
-    $ScriptBlock = 
-    { 
-        param(
-            $ComputerName,
-            $count
-        )
-        Test-Connection $ComputerName -Count $count
-    }
+        $ScriptBlock = 
+        { 
+            param(
+                $ComputerName,
+                $count,
+                $list
+            )
+            Test-Connection $ComputerName -Count $count
+        }
 .PARAMETER MaxThreads
     This paramater is not mandatory, though it is where you can set the maximum concurrent threads or jobs.
     This setting in memory dependent and too large a value may exceed available memory.
@@ -47,19 +63,19 @@
     period of time when this value is set larger.
     If no value is set, the default of 20 threads will be applied
 
-    $MaxThreads = 50     
-
+        $MaxThreads = 50     
 .PARAMETER NoProgress
     A switch to disable activity progress.
     NOTE: When executing in VS-Code, the Write-InlineProgress command from TMK-CoreModules must be present
-
 .NOTES
 	Author: Travis M Knight; tmknight88@gmail.com
 	Date: 2017-03-15: tmknight: Inception
 	Date: 2017-05-03: tmknight: Update notes. Modify how runspace status is tracked.
 	Date: 2017-11-30: tmknight: Update progress to account for VS-Code host.
-	Date: 2018-02-07: tmknight: Added switch to not show progress if desired for silent execution;Paramter verbiage change from LoopObjects to InputObjects.
+	Date: 2018-02-07: tmknight: Added switch to not show progress if desired for silent execution;Parameter verbiage change from LoopObjects to InputObject.
 	Date: 2018-02-14: tmknight: Add logic to force progress to 100% when all operations complete.
+	Date: 2018-08-09: tmknight: Clarify "Arguments" parameter.
+	Date: 2018-10-19: tmknight: Rename "InputObject" parameter to be in alignment with other PS modules.
 .LINK
     https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/26/beginning-use-of-powershell-runspaces-part-1/
     https://github.com/tmknight/TMK-CoreModules
@@ -79,7 +95,7 @@ function Start-Multithreading {
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true, 
             Position = 1)]
-        $InputObjects,
+        $InputObject,
 
         # List of arguments required by the scriptblock
         [Parameter(Mandatory = $false,
@@ -109,6 +125,7 @@ function Start-Multithreading {
         $RunspacePool = [RunspaceFactory]::CreateRunspacePool(1, $MaxThreads)
         $RunspacePool.Open()
 
+        ## Counter variable to assess progress
         $c = 0
     }
     Process {
@@ -126,7 +143,7 @@ function Start-Multithreading {
         }
         $ErrorActionPreference = 'Stop'
 
-        ForEach ($obj in $InputObjects) {
+        ForEach ($obj in $InputObject) {
             # Create a PowerShell object to run add the script and argument.
             $Powershell = [PowerShell]::Create().AddScript($Scriptblock).AddArgument($obj).AddParameters($Arguments)
 
@@ -162,7 +179,7 @@ function Start-Multithreading {
                     }
                 }
 
-                If ($Runspace.Result.IsCompleted -eq $true) {
+                if ($Runspace.Result.IsCompleted -eq $true) {
                     $result += $Runspace.PowerShell.EndInvoke($Runspace.Result)
                     $Runspace.PowerShell.Dispose()
                     $c++
@@ -201,6 +218,7 @@ function Start-Multithreading {
         }
     }
     End {
+        ## Release runspace pool
         $RunspacePool.Close()
         $RunspacePool.Dispose()
         Return $result
