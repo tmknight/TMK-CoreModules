@@ -29,6 +29,10 @@
     This paramater is not mandatory; wildcards (*) are accepted
 
     $OperatingSystem = "Windows 10*"
+.PARAMETER Description
+    This paramater is not mandatory; wildcards (*) are accepted
+
+    $Description = "*PC owned by*"
 .NOTES
 	Author: Travis M Knight; tmknight
 	Date: 2017-05-22: tmknight: Inception
@@ -39,6 +43,7 @@
         prompt to continue if Category user, objects = "*" and base = subtree
     Date: 2017-06-12: tmknight: Check for ActiveDirectory module
     Date: 2017-11-30: tmknight: Clean-up code
+    Date: 2018-07-03: tmknight: Add description parameter
 .LINK
     https://technet.microsoft.com/en-us/library/dd378937(WS.10).aspx
 #>
@@ -71,7 +76,12 @@ function Get-OUObjects {
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true, 
             Position = 4)]
-        $OperatingSystem = '*'
+        $OperatingSystem = '*',
+        [Parameter(Mandatory = $false,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true, 
+            Position = 5)]
+        $Description = '*'
     )
     
     begin {
@@ -95,14 +105,8 @@ function Get-OUObjects {
             ##LDAP filter
             switch ($Category) {
                 "computer" {
-                    if ($OperatingSystem) {
-                        $ldf = "(&(objectCategory=$Category)(OperatingSystem=$OperatingSystem)(Name=$obj)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
-                        $out += Get-ADComputer -SearchBase $Base -SearchScope $Scope -LDAPFilter $ldf -Properties Name, Description, OperatingSystem, OperatingSystemVersion, DistinguishedName, Created, LastLogonDate, PasswordLastSet
-                    }
-                    else {
-                        $ldf = "(&(objectCategory=$Category)(Name=$obj)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
-                        $out += Get-ADComputer -SearchBase $Base -SearchScope $Scope -LDAPFilter $ldf -Properties Name, Description, DistinguishedName, Created, LastLogonDate, PasswordLastSet
-                    }
+                    $ldf = "(&(objectCategory=$Category)(OperatingSystem=$OperatingSystem)(Name=$obj)(Description=$Description)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
+                    $out += Get-ADComputer -SearchBase $Base -SearchScope $Scope -LDAPFilter $ldf -Properties Name, Description, OperatingSystem, OperatingSystemVersion, DistinguishedName, Created, LastLogonDate, PasswordLastSet
                 }
                 "user" {
                     if ($obj -eq '*' -and $Scope -eq 'Subtree') {
