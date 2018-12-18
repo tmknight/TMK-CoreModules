@@ -4,7 +4,7 @@
 .DESCRIPTION
     Use this module to perform multi-threading of scripting on large target sets
 .EXAMPLE
-	Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -Arguments $Arguments
+	Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -ArgumentList $ArgumentList
 
     Source        Destination     IPV4Address      IPV6Address                              Bytes    Time(ms)
     ------        -----------     -----------      -----------                              -----    --------
@@ -20,7 +20,7 @@
     the object(s) on which to execute the ScriptBlock.
 
         $InputObject = import-csv c:\temp\list-of-pcs.csv
-.PARAMETER Arguments 
+.PARAMETER ArgumentList
     This parameter is not mandatory, though it must be in one of the following forms:
     
     A comma-separated list of variables in the order that they
@@ -29,7 +29,7 @@
         $count = 1
         $list  = "one","two","Three"
 
-        Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -Arguments $count, $list
+        Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -ArgumentList $count, $list
 
     A hashtable with each parameter required by your script being in the order that they
     are called by the script.
@@ -37,12 +37,12 @@
         $count = 1
         $list = "one","two","Three"
 
-        $Arguments = @{
+        $ArgumentList = @{
             count = $count
             list  = $list
         }
 
-        Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -Arguments $Arguments
+        Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -ArgumentList $ArgumentList
 .PARAMETER ScriptBlock 
 	This paramater is mandatory and is where you will place your code to loop through. The loop object
     should be the first parameter.
@@ -76,6 +76,7 @@
 	Date: 2018-02-14: tmknight: Add logic to force progress to 100% when all operations complete.
 	Date: 2018-08-09: tmknight: Clarify "Arguments" parameter.
 	Date: 2018-10-19: tmknight: Rename "InputObject" parameter to be in alignment with other PS modules.
+	Date: 2018-12-18: tmknight: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules.
 .LINK
     https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/26/beginning-use-of-powershell-runspaces-part-1/
     https://github.com/tmknight/TMK-CoreModules
@@ -83,38 +84,31 @@
 
 function Start-Multithreading {
     param(
-        # Command or script to run. Must take ComputerName as argument to make sense. 
+        # The object(s) on which to execute the ScriptBlock
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
             Position = 0)]
+        [Alias("InputObjects")]
+        $InputObject,
+
+        # Command or script to run. Must take ComputerName as argument to make sense. 
+        [Parameter(Mandatory = $true,
+            Position = 1)]
         $ScriptBlock,
 
         # List of arguments required by the scriptblock
-        [Parameter(Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
-            Position = 1)]
-        $InputObject,
-
-        # List of arguments required by the scriptblock
         [Parameter(Mandatory = $false,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
             Position = 2)]
-        $Arguments = @{arg = '0'},
+        [Alias("Arguments")]
+        $ArgumentList = @{arg = '0'},
 
         # Maximum concurrent threads to start
         [Parameter(Mandatory = $false,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
             Position = 3)]
         [int]$MaxThreads = 20,
 
         # Whether progress is displayed
         [Parameter(Mandatory = $false,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
             Position = 4)]
         [switch]$NoProgress
     )
@@ -145,7 +139,7 @@ function Start-Multithreading {
 
         ForEach ($obj in $InputObject) {
             # Create a PowerShell object to run add the script and argument.
-            $Powershell = [PowerShell]::Create().AddScript($Scriptblock).AddArgument($obj).AddParameters($Arguments)
+            $Powershell = [PowerShell]::Create().AddScript($Scriptblock).AddArgument($obj).AddParameters($ArgumentList)
 
             # Specify runspace to use
             $Powershell.RunspacePool = $RunspacePool
@@ -192,7 +186,7 @@ function Start-Multithreading {
         if ($RunspaceCollection.Count -le 0) {
             $c = $count
             $perc = ($c / $count * 100)
-            switch ($NoProgress) {
+            switch ($NoProgress.IsPresent) {
                 $false {
                     switch ($Host.Name) {
                         "Visual Studio Code Host" {
