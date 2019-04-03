@@ -2,7 +2,7 @@
 # Module manifest for shared modules'
 ###
 @{
-    ModuleVersion     = '1.5.3.7'
+    ModuleVersion     = '1.5.3.8'
     GUID              = '0c83f152-41a4-4997-92da-c06923fb3e12'
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
@@ -58,7 +58,8 @@
             * 2018-02-14: tmknight: v1.5.3.4: Add logic to force progress to 100% when all operations complete
             * 2018-08-22: tmknight: v1.5.3.5: Several updates to child modules. See individual module notes for list of changes
             * 2018-11-21: tmknight: v1.5.3.6: Add Test-SubnetMember to assess boundary membership.  Included use of this module in Get-ADSite
-            * 2018-12-18: tmknight: v1.5.3.7: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules'
+            * 2018-12-18: tmknight: v1.5.3.7: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules
+            * 2018-04-02: tmknight: Update to Write-InlineProgress to account for vscode-powershell 2.x which now supports Write-Progress'
         }
     }
 }

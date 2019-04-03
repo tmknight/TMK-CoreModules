@@ -42,7 +42,7 @@ function Test-SubnetMember {
     )
     
     # Replace any non-digit characters to ensure only dotted IP address
-    $Subnet = ($Subnet -split "\D") -join "\." -replace "(\\{1,}\.){2,}", "."
+    $Subnet = ($Subnet -split "\D") -join "." -replace "(\\{1,}\.){2,}", "."
     
     # Separate the network address and length
     $network1, [int]$subnetlen1 = $Subnet.Split('/')

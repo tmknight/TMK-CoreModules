@@ -5,21 +5,22 @@
    Use this module to write progress of scripts.  It will write progress inline when the host is VS Code and execute Write-Progress when
    in native PowerShell
 .EXAMPLE
-    Write-InlineProgress -Activity $activity -PercentComplete $percentcomplete
+    Write-InlineProgress -Activity $Activity -PercentComplete $percentcomplete
     
-    This is my activity statement: 80%
+    This is my Activity statement: 80%
 .PARAMETER Activity
 	This parameter is manadatory and is in the form of a string
 
-    $activity = "This is my activity statement:"
+    $Activity = "This is my Activity statement:"
 .PARAMETER PercentComplete 
     This paramater is mandatory and is in the form of an integer
 
-    $percentcomplete = 80
+    $PercentComplete = 80
 .NOTES
 	Author: Travis M Knight; tmknight
 	Date: 2017-10-25: tmknight: Inception
 	Date: 2017-11-30: tmknight: Set percent complete to two decimal places
+	Date: 2018-04-02: tmknight: Account for vscode-powershell 2.x which now supports Write-Progress
 .LINK
     https://msdn.microsoft.com/en-us/library/system.console(v=vs.110).aspx
 #>
@@ -30,7 +31,7 @@ function Write-InlineProgress {
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true, 
             Position = 0)]
-        [string]$activity,
+        [string]$Activity,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
@@ -46,16 +47,21 @@ function Write-InlineProgress {
         $PercentComplete
     )
 
+    $perc = "{0:N2}" -f $PercentComplete
     switch ($host.Name) {
         "Visual Studio Code Host" {
-            $perc = "{0:N2}" -f $PercentComplete
-            $val = "$activity $perc%    "
-            $CursorY = $host.UI.RawUI.CursorPosition.Y 
-            [Console]::SetCursorPosition(0, $CursorY)
-            [Console]::Write($val)
+            if ($host.Version -ge "2.0.1") {
+                Write-Progress -Activity $Activity -PercentComplete $perc -Status "$perc%"
+            }
+            else {
+                $val = "$Activity $perc%    "
+                $CursorY = $host.UI.RawUI.CursorPosition.Y 
+                [Console]::SetCursorPosition(0, $CursorY)
+                [Console]::Write($val)
+            }
         }
         Default {
-            Write-Progress -Activity $activity -PercentComplete $PercentComplete
+            Write-Progress -Activity $Activity -PercentComplete $perc -Status "$perc%"
         }
     }
 }
