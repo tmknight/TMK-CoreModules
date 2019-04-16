@@ -165,7 +165,7 @@ function Start-Multithreading {
                                     -PercentComplete $perc
                             }
                             default {
-                                Write-Progress -Activity "Executing.." `
+                                Write-Progress -Activity "Executing..." `
                                     -PercentComplete $perc `
                                     -Status "$c of $count threads completed"
                             }
