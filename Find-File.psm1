@@ -31,8 +31,10 @@ function Find-File {
     param(
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "Please ensure a fully qualified path. Root drives must terminate with `"\`".",
             Position = 0)]
+        [ValidatePattern("[a-zA-Z]\:\\[a-zA-Z0-9_]*")]
         [string]$Path,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
@@ -50,37 +52,53 @@ function Find-File {
     )
 
     Begin {
-        $dirs = (Get-ChildItem -Path $Path -Directory -Recurse -Depth 1 -ErrorAction SilentlyContinue).FullName
-        $dirs += $Path
-        if ($dirs -match "C\:\\Windows\\.*") {
-            $title = 'The Windows directory is in your search; this will take a very long time to complete.'
-            # $prompt = '[A]bort or [C]ontinue?'
-            $prompt = ''
-            $abort = New-Object System.Management.Automation.Host.ChoiceDescription '&Abort', 'Aborts the operation'
-            $continue = New-Object System.Management.Automation.Host.ChoiceDescription '&Continue', 'Continues the operation'
-            $options = [System.Management.Automation.Host.ChoiceDescription[]] ($abort, $continue)
-            $choice = $host.ui.PromptForChoice($title, $prompt, $options, 0)
-            if ($choice -eq 0) {
-                break
+        try {
+            $dirs = (Get-ChildItem -Path $Path -Directory -Recurse -Depth 1 -ErrorAction SilentlyContinue).FullName
+            if ($dirs -match "\w{1,}") {
+                $dirs += $Path
+                if ($dirs -match "[a-zA-Z]\:\\Windows\\") {
+                    $title = 'A "Windows" directory is in your search; this may take a very long time to complete.'
+                    $prompt = ''
+                    $abort = New-Object System.Management.Automation.Host.ChoiceDescription '&Abort', 'Aborts the operation'
+                    $continue = New-Object System.Management.Automation.Host.ChoiceDescription '&Continue', 'Continues the operation'
+                    $options = [System.Management.Automation.Host.ChoiceDescription[]] ($abort, $continue)
+                    $choice = $host.ui.PromptForChoice($title, $prompt, $options, 0)
+                    if ($choice -eq 0) {
+                        break
+                    }
+                }
             }
+            else {
+                Write-Error -Message "The $Path indicated does not appear to be valid.  Please ensure a fully qualified path"
+            }
+        }
+        catch {
+            $_
+            break
         }
 
         $block = {
             param($dir, $File)
             $result = @()
-            $i = Get-ChildItem -Path "$dir\*" -Filter "*$File*" -File -Recurse -Force -ErrorAction SilentlyContinue
-            if ($i) {
-                foreach ($o in $i | Where-Object -Property FullName -Value $File -Match) {
-                    $result += [PSCustomObject]@{
-                        File = $o.FullName
+            try {
+                $i = Get-ChildItem -Path "$dir\*" -Filter "*$File*" -File -Recurse -Force -ErrorAction SilentlyContinue
+                if ($i) {
+                    foreach ($o in $i | Where-Object -Property FullName -Value $File -Match) {
+                        $result += [PSCustomObject]@{
+                            File = $o.FullName
+                        }
                     }
+                    return $result
                 }
-                return $result
+            }
+            catch {
+                $_
+                break
             }
         }
     }
     Process {
-        $out = Start-Multithreading -InputObject $dirs -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -NoProgress:$NoProgress | Sort-Object -Property File
+        $out = Start-Multithreading -InputObject $dirs -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -NoProgress:$NoProgress | Sort-Object -Property File -Unique
     }
     End {
         if ($out -match "\w{1,}") {

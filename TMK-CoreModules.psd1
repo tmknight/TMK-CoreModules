@@ -2,7 +2,7 @@
 # Module manifest for shared modules'
 ###
 @{
-    ModuleVersion     = '1.5.3.9'
+    ModuleVersion     = '1.5.3.10'
     GUID              = '0c83f152-41a4-4997-92da-c06923fb3e12'
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
@@ -16,7 +16,7 @@
     NestedModules     = @(
         'Start-FastPing',
         'Start-Multithreading',
-        'Get-OUObjects',
+        'Get-OUObject',
         'Get-ADSite',
         'Write-InlineProgress',
         'Test-SubnetMember',
@@ -28,6 +28,7 @@
                 'multithreading', 'multi-threading', 'multi threading',
                 'fastping', 'fast-ping', 'fast ping',
                 'ouobjects', 'ou-objects', 'ou objects',
+                'ouobject', 'ou-object', 'ou object',
                 'adsite', 'ad-site', 'ad site',
                 'write progress', 'Find-File', 'find file'
             )
@@ -61,7 +62,8 @@
             * 2018-11-21: tmknight: v1.5.3.6: Add Test-SubnetMember to assess boundary membership.  Included use of this module in Get-ADSite
             * 2018-12-18: tmknight: v1.5.3.7: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules
             * 2018-04-02: tmknight: Update to Write-InlineProgress to account for vscode-powershell 2.x which now supports Write-Progress
-            * 2018-04-16: tmknight: Addition of Find-File module'
+            * 2018-04-16: tmknight: Addition of Find-File module
+            * 2018-04-24: tmknight: Rename Get-OUObject; update Get-OUObject'
         }
     }
 }
