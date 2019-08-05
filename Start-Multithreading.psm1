@@ -22,7 +22,7 @@
         $InputObject = import-csv c:\temp\list-of-pcs.csv
 .PARAMETER ArgumentList
     This parameter is not mandatory, though it must be in one of the following forms:
-    
+
     A comma-separated list of variables in the order that they
     are called by the script.
 
@@ -43,12 +43,12 @@
         }
 
         Start-Multithreading -ScriptBlock $ScriptBlock -InputObject $InputObject -ArgumentList $ArgumentList
-.PARAMETER ScriptBlock 
+.PARAMETER ScriptBlock
 	This paramater is mandatory and is where you will place your code to loop through. The loop object
     should be the first parameter.
-    
-        $ScriptBlock = 
-        { 
+
+        $ScriptBlock =
+        {
             param(
                 $ComputerName,
                 $count,
@@ -63,7 +63,7 @@
     period of time when this value is set larger.
     If no value is set, the default of 20 threads will be applied
 
-        $MaxThreads = 50     
+        $MaxThreads = 50
 .PARAMETER NoProgress
     A switch to disable activity progress.
     NOTE: When executing in VS-Code, the Write-InlineProgress command from TMK-CoreModules must be present
@@ -91,7 +91,7 @@ function Start-Multithreading {
         [Alias("InputObjects")]
         $InputObject,
 
-        # Command or script to run. Must take ComputerName as argument to make sense. 
+        # Command or script to run. Must take ComputerName as argument to make sense.
         [Parameter(Mandatory = $true,
             Position = 1)]
         $ScriptBlock,
@@ -100,7 +100,7 @@ function Start-Multithreading {
         [Parameter(Mandatory = $false,
             Position = 2)]
         [Alias("Arguments")]
-        $ArgumentList = @{arg = '0'},
+        $ArgumentList = @{arg = '0' },
 
         # Maximum concurrent threads to start
         [Parameter(Mandatory = $false,
@@ -156,21 +156,10 @@ function Start-Multithreading {
         ## Keep track of open threads and terminate when all have completed
         While ($RunspaceCollection.Count -gt 0) {
             Foreach ($Runspace in $RunspaceCollection.ToArray()) {
-                switch ($NoProgress) {
-                    $false {
-                        $perc = ($c / $count * 100)
-                        switch ($Host.Name) {
-                            "Visual Studio Code Host" {
-                                Write-InlineProgress -Activity "$c of $count threads completed" `
-                                    -PercentComplete $perc
-                            }
-                            default {
-                                Write-Progress -Activity "Executing..." `
-                                    -PercentComplete $perc `
-                                    -Status "$c of $count threads completed"
-                            }
-                        }
-                    }
+                if ($NoProgress.IsPresent -eq $false) {
+                    $perc = ($c / $count * 100)
+                    Write-InlineProgress -Activity "$c of $count threads completed" `
+                        -PercentComplete $perc
                 }
 
                 if ($Runspace.Result.IsCompleted -eq $true) {
@@ -182,37 +171,18 @@ function Start-Multithreading {
             }
         }
 
-        ## Force progress to 100% when all threads have completed
-        if ($RunspaceCollection.Count -le 0) {
+        if ($NoProgress.IsPresent -eq $false) {
+            ## Force progress to 100
             $c = $count
-            $perc = ($c / $count * 100)
-            switch ($NoProgress.IsPresent) {
-                $false {
-                    switch ($Host.Name) {
-                        "Visual Studio Code Host" {
-                            Write-InlineProgress -Activity "$c of $count threads completed" `
-                                -PercentComplete $perc
-                        }
-                        default {
-                            Write-Progress -Activity "Executing.." `
-                                -PercentComplete $perc `
-                                -Status "$c of $count threads completed"
-                        }
-                    }
-                }
-            }
-        }
-        
-        ## Move the cursor to the next line, particularly for Write-InlineProgress module
-        $RunspaceCollection.Clear()
-        switch ($Host.Name) {
-            "Visual Studio Code Host" {
-                Write-Host
-            }
+            $perc = 100
+            Write-InlineProgress -Activity "$c of $count threads completed" `
+                -PercentComplete $perc
+            [System.Console]::WriteLine()
         }
     }
     End {
         ## Release runspace pool
+        $RunspaceCollection.Clear()
         $RunspacePool.Close()
         $RunspacePool.Dispose()
         Return $result

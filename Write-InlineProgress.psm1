@@ -6,13 +6,13 @@
    in native PowerShell
 .EXAMPLE
     Write-InlineProgress -Activity $Activity -PercentComplete $percentcomplete
-    
+
     This is my Activity statement: 80%
 .PARAMETER Activity
 	This parameter is manadatory and is in the form of a string
 
     $Activity = "This is my Activity statement:"
-.PARAMETER PercentComplete 
+.PARAMETER PercentComplete
     This paramater is mandatory and is in the form of an integer
 
     $PercentComplete = 80
@@ -21,6 +21,7 @@
 	Date: 2017-10-25: tmknight: Inception
 	Date: 2017-11-30: tmknight: Set percent complete to two decimal places
 	Date: 2018-04-02: tmknight: Account for vscode-powershell 2.x which now supports Write-Progress
+	Date: 2019-07-08: tmknight: Account for vscode-powershell-preview which now supports Write-Progress
 .LINK
     https://msdn.microsoft.com/en-us/library/system.console(v=vs.110).aspx
 #>
@@ -29,39 +30,70 @@ function Write-InlineProgress {
     param(
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipelineByPropertyName = $true,
             Position = 0)]
         [string]$Activity,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
             Position = 1)]
-        [ValidateScript( {
-                If ($_ -match '\d') {
-                    $True
-                }
-                Else {
-                    Throw "The argument `"$_`" is not a number value. Supply an argument that is a number value and try the command again."
-                }
-            })]
-        $PercentComplete
+        [int]$PercentComplete
     )
 
-    $perc = "{0:N2}" -f $PercentComplete
-    switch ($host.Name) {
-        "Visual Studio Code Host" {
-            if ($host.Version -ge "2.0.1") {
-                Write-Progress -Activity $Activity -PercentComplete $perc -Status "$perc%"
-            }
-            else {
-                $val = "$Activity $perc%    "
-                $CursorY = $host.UI.RawUI.CursorPosition.Y 
-                [Console]::SetCursorPosition(0, $CursorY)
-                [Console]::Write($val)
+    begin {
+        ## Set percent value to two decimal places
+        $perc = "{0:N2}" -f $PercentComplete
+
+        ## Capture current console colors
+        $curBackgroundColor = [System.Console]::BackgroundColor
+        $curForegroundColor = [System.Console]::ForegroundColor
+        $tmpColors = "$env:TEMP\ConsoleColor.csv"
+        [PSCustomObject]@{
+            BackgroundColor = $curBackgroundColor
+            ForegroundColor = $curForegroundColor
+        } | Export-Csv -Path $tmpColors -NoTypeInformation -Force -Confirm:$false
+    }
+    process {
+        try {
+            switch ($host.Name) {
+                "Visual Studio Code Host" {
+                    ## Code PS Host Preview supports Write-Progress
+                    if ($psEditor.EditorServicesVersion -ge "2.0.0.0") {
+                        Write-Progress -Activity $Activity -PercentComplete $perc -Status "$perc%"
+                    }
+                    else {
+                        $val = " $Activity $perc%    "
+                        $CursorY = $host.UI.RawUI.CursorPosition.Y
+                        [System.Console]::BackgroundColor = [System.ConsoleColor]::Cyan
+                        [System.Console]::ForegroundColor = [System.ConsoleColor]::Black
+                        [System.Console]::SetCursorPosition(0, $CursorY)
+                        [System.Console]::Write($val)
+                    }
+                }
+                Default {
+                    Write-Progress -Activity $Activity -PercentComplete $perc -Status "$perc%"
+                }
             }
         }
-        Default {
-            Write-Progress -Activity $Activity -PercentComplete $perc -Status "$perc%"
+        catch {
+            $_
         }
+    }
+    end {
+        switch ($host.Name) {
+            "Visual Studio Code Host" {
+                ## Clear progress line in keeping with Write-Progress
+                if ($psEditor.EditorServicesVersion -lt "2.0.0.0") {
+                    $colors = Import-Csv -Path $tmpColors
+                    $CursorY = $host.UI.RawUI.CursorPosition.Y
+                    [System.Console]::BackgroundColor = [System.ConsoleColor]::($colors.BackgroundColor).ToString()
+                    [System.Console]::ForegroundColor = [System.ConsoleColor]::($colors.ForegroundColor).ToString()
+                    [System.Console]::SetCursorPosition(0, $CursorY)
+                    [System.Console]::Write("")
+                }
+            }
+        }
+        ## Remove temp color file
+        Remove-Item -Path $tmpColors -Force -Confirm:$false
     }
 }

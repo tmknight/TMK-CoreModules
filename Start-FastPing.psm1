@@ -13,15 +13,15 @@
     AAAA          : Unable to resolve
     Port 445 Open : True
  .PARAMETER ComputerName
-	This parameter is required and must be in the form of valid DNS name.
+	This parameter is required and must be in the form of valid DNS name or IP address.
 
     $ComputerName = 'TEST-00'
- .PARAMETER Port 
+ .PARAMETER Port
 	This parameter is optional, though must be in the form of a valid TCP port.
     if not defined, port 445 will be used.
 
     $Port = 445
- .PARAMETER Lookup 
+ .PARAMETER Lookup
 	This parameter is optional.  If invoked, there are no values, it is a switch to true
 
     $Lookup = $false
@@ -29,29 +29,39 @@
 	Author: Travis M Knight
 	Date: 2017-04-28
     v0-1: Inception
+    v0-6: Update to permit IP address
 #>
 
 Function Start-FastPing {
     [CmdletBinding()]
     Param(
-        ## ComputerName, required. 
+        ## ComputerName, required.
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipelineByPropertyName = $true,
             Position = 0)]
-        [string]$ComputerName,
+            [ValidateScript( {
+            if ($_ -match "^\w" -or $_ -match "^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}") {
+                $true
+            }
+            else {
+                Throw [System.Management.Automation.ValidationMetadataException] "Please only enter valid DNS name or IP address"
+                Start-Sleep -Seconds 60
+            }
+        } )]
+[string]$ComputerName,
 
         ## TCP port to knock, optional
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipelineByPropertyName = $true,
             Position = 1)]
         [int]$Port = '445',
 
         ## Perform lookup
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipelineByPropertyName = $true,
             Position = 2)]
         [switch]$Lookup = $false
     )
@@ -63,7 +73,7 @@ Function Start-FastPing {
         $vars = 'rslt'
         Remove-Variable $vars
     }
-    Process {    
+    Process {
         ## Test device availability
         Function fastping {
             [CmdletBinding()]
@@ -77,7 +87,7 @@ Function Start-FastPing {
                 ## Attempt connection, 300 millisecond timeout, returns boolean
                 switch ($ping.send($cn, 300).status) {
                     "Success" { Return $true }
-                    Default { 
+                    Default {
                         ## Do one more should the first one fail
                         switch ($ping.send($cn, 300).status) {
                             "Success" { Return $true }
@@ -98,7 +108,7 @@ Function Start-FastPing {
                 [string]$cn,
                 [int]$prt
             )
-    
+
             ## Initialize object
             $connection = New-Object Net.Sockets.TcpClient
             try {
@@ -111,7 +121,7 @@ Function Start-FastPing {
 
             ## Cleanup
             $connection.Close()
-    
+
             Return $open
         }
 
@@ -173,7 +183,7 @@ Function Start-FastPing {
         $rslt = [PSCustomObject] @{
             ComputerName      = $ComputerName
             HostName          = $lku[2]
-            Online            = (fastping -cn $ComputerName)
+            PingSucceeded     = (fastping -cn $ComputerName)
             A                 = $lku[0]
             AAAA              = $lku[1]
             "Port $Port Open" = (portKnock -cn $ComputerName -prt $Port)

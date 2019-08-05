@@ -2,7 +2,7 @@
 # Module manifest for shared modules'
 ###
 @{
-    ModuleVersion     = '1.5.3.10'
+    ModuleVersion     = '1.5.3.13'
     GUID              = '0c83f152-41a4-4997-92da-c06923fb3e12'
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
@@ -20,7 +20,8 @@
         'Get-ADSite',
         'Write-InlineProgress',
         'Test-SubnetMember',
-        'Find-File'
+        'Find-File',
+        'Copy-WithProgress'
     )
     PrivateData       = @{
         PSData = @{
@@ -63,7 +64,9 @@
             * 2018-12-18: tmknight: v1.5.3.7: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules
             * 2018-04-02: tmknight: Update to Write-InlineProgress to account for vscode-powershell 2.x which now supports Write-Progress
             * 2018-04-16: tmknight: Addition of Find-File module
-            * 2018-04-24: tmknight: Rename Get-OUObject; update Get-OUObject'
+            * 2018-04-24: tmknight: Rename Get-OUObject; update Get-OUObject
+            * 2018-07-08: tmknight: Update Write-InlineProgress; code host release broke Write-Progress again
+            * 2018-08-05: tmknight: v1.5.3.13: Update Start-FastPing to handle IP addresses'
         }
     }
 }
