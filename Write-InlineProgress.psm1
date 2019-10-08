@@ -47,13 +47,20 @@ function Write-InlineProgress {
         ## Capture current console colors
         $curBackgroundColor = [System.Console]::BackgroundColor
         $curForegroundColor = [System.Console]::ForegroundColor
-        $tmpColors = "$env:TEMP\ConsoleColor.csv"
+        if ($PSHOME -match "Windows") {
+            $tmpColors = "$env:TEMP\ConsoleColor.csv"
+        }
+        else {
+            $tmpColors = "/tmp/ConsoleColor.csv"
+        }
+
         [PSCustomObject]@{
             BackgroundColor = $curBackgroundColor
             ForegroundColor = $curForegroundColor
         } | Export-Csv -Path $tmpColors -NoTypeInformation -Force -Confirm:$false
     }
     process {
+        $ErrorActionPreference = "Stop"
         try {
             switch ($host.Name) {
                 "Visual Studio Code Host" {
@@ -94,6 +101,6 @@ function Write-InlineProgress {
             }
         }
         ## Remove temp color file
-        Remove-Item -Path $tmpColors -Force -Confirm:$false
+        Remove-Item -Path $tmpColors -Force -Confirm:$false -ErrorAction SilentlyContinue
     }
 }
