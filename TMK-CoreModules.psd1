@@ -2,7 +2,7 @@
 # Module manifest for shared modules'
 ###
 @{
-    ModuleVersion     = '1.5.3.13'
+    ModuleVersion     = '1.5.3.14'
     GUID              = '0c83f152-41a4-4997-92da-c06923fb3e12'
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
@@ -21,7 +21,8 @@
         'Write-InlineProgress',
         'Test-SubnetMember',
         'Find-File',
-        'Copy-WithProgress'
+        'Copy-WithProgress',
+        'Get-NetworkInfo'
     )
     PrivateData       = @{
         PSData = @{
@@ -66,7 +67,8 @@
             * 2018-04-16: tmknight: Addition of Find-File module
             * 2018-04-24: tmknight: Rename Get-OUObject; update Get-OUObject
             * 2018-07-08: tmknight: Update Write-InlineProgress; code host release broke Write-Progress again
-            * 2018-08-05: tmknight: v1.5.3.13: Update Start-FastPing to handle IP addresses'
+            * 2018-08-05: tmknight: v1.5.3.13: Update Start-FastPing to handle IP addresses
+            * 2019-11-22: tmknight: v1.5.3.14: Add Get-NetworkInfo which will work in PS core on Linux: Credit https://github.com/pldmgg'
         }
     }
 }
