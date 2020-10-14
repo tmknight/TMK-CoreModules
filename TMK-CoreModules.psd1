@@ -2,7 +2,7 @@
 # Module manifest for shared modules'
 ###
 @{
-    ModuleVersion     = '1.5.3.14'
+    ModuleVersion     = '1.5.3.15'
     GUID              = '0c83f152-41a4-4997-92da-c06923fb3e12'
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
