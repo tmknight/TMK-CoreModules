@@ -5,14 +5,14 @@
    Use this module to find files faster than can be accomplished with Get-ChildItem alone
 .EXAMPLE
     Find-File -Path $dirs -File "nmap-update.exe"
-    
+
     C:\Program Files (x86)\Nmap\nmap-update.exe
 .PARAMETER Path
 	This parameter is manadatory and is in the form of a string
 
     $pth = "c:\"
-.PARAMETER File 
-    This paramater is mandatory and is in the form of an integer
+.PARAMETER File
+    This paramater is mandatory and is in the form of a string
 
     $file = "nmap-update.exe"
 
@@ -20,7 +20,7 @@
 	This parameter is an optional integer
 
     $MaxThreads = 100
-.PARAMETER NoProgress 
+.PARAMETER NoProgress
     This paramater is an option switch that will turn off visual progress
 .NOTES
 	Author: Travis M Knight; tmknight

@@ -22,6 +22,7 @@
 	Date: 2017-11-30: tmknight: Set percent complete to two decimal places
 	Date: 2018-04-02: tmknight: Account for vscode-powershell 2.x which now supports Write-Progress
 	Date: 2019-07-08: tmknight: Account for vscode-powershell-preview which now supports Write-Progress
+	Date: 2020-10-14: tmknight: Number format to zero places.  Assessment of $PSHOME to match windows directory path format
 .LINK
     https://msdn.microsoft.com/en-us/library/system.console(v=vs.110).aspx
 #>
@@ -42,12 +43,12 @@ function Write-InlineProgress {
 
     begin {
         ## Set percent value to two decimal places
-        $perc = "{0:N2}" -f $PercentComplete
+        $perc = "{0:N0}" -f $PercentComplete
 
         ## Capture current console colors
         $curBackgroundColor = [System.Console]::BackgroundColor
         $curForegroundColor = [System.Console]::ForegroundColor
-        if ($PSHOME -match "Windows") {
+        if ($PSHOME -match "\:\\") {
             $tmpColors = "$env:TEMP\ConsoleColor.csv"
         }
         else {

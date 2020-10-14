@@ -68,7 +68,8 @@
             * 2018-04-24: tmknight: Rename Get-OUObject; update Get-OUObject
             * 2018-07-08: tmknight: Update Write-InlineProgress; code host release broke Write-Progress again
             * 2018-08-05: tmknight: v1.5.3.13: Update Start-FastPing to handle IP addresses
-            * 2019-11-22: tmknight: v1.5.3.14: Add Get-NetworkInfo which will work in PS core on Linux: Credit https://github.com/pldmgg'
+            * 2019-11-22: tmknight: v1.5.3.14: Add Get-NetworkInfo which will work in PS core on Linux: Credit https://github.com/pldmgg
+            * 2019-11-22: tmknight: v1.5.3.15: Write-InlineProgress: Number format to zero places.  Fix assessment of $PSHOME to match windows directory path format'
         }
     }
 }
