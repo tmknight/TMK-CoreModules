@@ -55,7 +55,7 @@ function Find-File {
         try {
             $dirs = (Get-ChildItem -Path $Path -Directory -Recurse -Depth 1 -ErrorAction SilentlyContinue).FullName
             if ($dirs -match "\w{1,}") {
-                $dirs += $Path
+                # $dirs += $Path
                 if ($dirs -match "[a-zA-Z]\:\\Windows\\") {
                     $title = 'A "Windows" directory is in your search; this may take a very long time to complete.'
                     $prompt = ''
@@ -99,6 +99,7 @@ function Find-File {
     }
     Process {
         $out = Start-Multithreading -InputObject $dirs -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -NoProgress:$NoProgress | Sort-Object -Property File -Unique
+        $out += Get-ChildItem -Path $Path -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue
     }
     End {
         if ($out -match "\w{1,}") {
