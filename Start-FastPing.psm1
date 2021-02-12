@@ -18,7 +18,6 @@
     $ComputerName = 'TEST-00'
  .PARAMETER Port
 	This parameter is optional, though must be in the form of a valid TCP port.
-    if not defined, port 445 will be used.
 
     $Port = 445
  .PARAMETER Lookup
@@ -40,23 +39,23 @@ Function Start-FastPing {
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
             Position = 0)]
-            [ValidateScript( {
-            if ($_ -match "^\w" -or $_ -match "^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}") {
-                $true
-            }
-            else {
-                Throw [System.Management.Automation.ValidationMetadataException] "Please only enter valid DNS name or IP address"
-                Start-Sleep -Seconds 60
-            }
-        } )]
-[string]$ComputerName,
+        [ValidateScript( {
+                if ($_ -match "^\w" -or $_ -match "^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}") {
+                    $true
+                }
+                else {
+                    Throw [System.Management.Automation.ValidationMetadataException] "Please only enter valid DNS name or IP address"
+                    Start-Sleep -Seconds 60
+                }
+            } )]
+        [string]$ComputerName,
 
         ## TCP port to knock, optional
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
             Position = 1)]
-        [int]$Port = '445',
+        [int]$Port,
 
         ## Perform lookup
         [Parameter(Mandatory = $false,
@@ -181,13 +180,18 @@ Function Start-FastPing {
 
         ## Results
         $rslt = [PSCustomObject] @{
-            ComputerName      = $ComputerName
-            HostName          = $lku[2]
-            PingSucceeded     = (fastping -cn $ComputerName)
-            A                 = $lku[0]
-            AAAA              = $lku[1]
-            "Port $Port Open" = (portKnock -cn $ComputerName -prt $Port)
+            ComputerName  = $ComputerName
+            HostName      = $lku[2]
+            PingSucceeded = (fastping -cn $ComputerName)
+            A             = $lku[0]
+            AAAA          = $lku[1]
+            # "Port $Port Open" = (portKnock -cn $ComputerName -prt $Port)
         }
+
+        if ($Port) {
+            $rslt | Add-Member -MemberType NoteProperty -Name "Port $Port Open" -Value (portKnock -cn $ComputerName -prt $Port)
+        }
+
     }
     End {
         Return $rslt
