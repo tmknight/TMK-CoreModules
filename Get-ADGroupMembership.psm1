@@ -61,10 +61,7 @@ Function Get-ADGroupMembership {
     }
     Process {
         try {
-            ForEach ($u in $colProplistUsr) {
-                $objSearcher.PropertiesToLoad.Add($u) | Out-Null
-            }
-
+            ## User or computer
             switch -RegEx ($Identity) {
                 '\$$' {
                     $usr = (Get-ADComputer -Filter $strDN).DistinguishedName
@@ -74,16 +71,16 @@ Function Get-ADGroupMembership {
                 }
             }
 
-            ## Get user's group membership
-            switch ($Recursive) {
-                ## Nested groups
-                $true {
-                    $strGroup = "(&(objectCategory=group)(member:1.2.840.113556.1.4.1941:=$usr))"
-                }
-                ## Direct groups
-                default {
-                    $strGroup = "(&(objectCategory=group)(member=$usr))"
-                }
+            ## Direct or recursive membership
+            if ($Recursive.IsPresent) {
+                $strGroup = "(&(objectCategory=group)(member:1.2.840.113556.1.4.1941:=$usr))"
+            }
+            else {
+                $strGroup = "(&(objectCategory=group)(member=$usr))"
+            }
+
+            ForEach ($u in $colProplistUsr) {
+                $objSearcher.PropertiesToLoad.Add($u) | Out-Null
             }
 
             $objSearcher.Filter = $strGroup
@@ -92,9 +89,8 @@ Function Get-ADGroupMembership {
                 $objSearcher.PropertiesToLoad.Add($g) | Out-Null
             }
 
-            $colResultsGrp = $objSearcher.FindAll()
             $obj = @()
-
+            $colResultsGrp = $objSearcher.FindAll()
             ForEach ($objResultGrp in $colResultsGrp) {
                 $vars = "objItemGrp", "grpDN", "name", "sid"
                 Remove-Variable $vars -ErrorAction SilentlyContinue
@@ -106,8 +102,13 @@ Function Get-ADGroupMembership {
                     $sid = "Mail Group"
                 }
                 else {
-                    $sid = (Get-ADGroup "$name").SID
-                    if ($sid -notmatch "S-1-5") {
+                    try {
+                        $sid = (Get-ADGroup "$name" -ErrorAction SilentlyContinue).SID
+                        if ($sid -notmatch "S-1-5") {
+                            $sid = "unknown"
+                        }
+                    }
+                    catch {
                         $sid = "unknown"
                     }
                 }
@@ -116,7 +117,6 @@ Function Get-ADGroupMembership {
                     DN   = "$grpDN"
                     SID  = $sid
                 }
-                $c++
             }
             if (-not $obj) {
                 Write-Warning "$Identity is not a member of any AD groups"
@@ -127,6 +127,6 @@ Function Get-ADGroupMembership {
         }
     }
     End {
-        Return $obj
+        Return $obj | Sort-Object Name
     }
 }
