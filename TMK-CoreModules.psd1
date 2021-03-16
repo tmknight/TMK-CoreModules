@@ -2,7 +2,7 @@
 # Module manifest for shared modules'
 ###
 @{
-    ModuleVersion     = '1.5.3.16'
+    ModuleVersion     = '1.5.4.0'
     GUID              = '0c83f152-41a4-4997-92da-c06923fb3e12'
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
@@ -22,7 +22,8 @@
         'Test-SubnetMember',
         'Find-File',
         'Copy-WithProgress',
-        'Get-NetworkInfo'
+        'Get-NetworkInfo',
+        'Get-ADGroupMembership'
     )
     PrivateData       = @{
         PSData = @{
@@ -32,7 +33,8 @@
                 'ouobjects', 'ou-objects', 'ou objects',
                 'ouobject', 'ou-object', 'ou object',
                 'adsite', 'ad-site', 'ad site',
-                'write progress', 'Find-File', 'find file'
+                'write progress', 'Find-File', 'find file',
+                'groups', 'group membership'
             )
             ReleaseNotes = '* 2017-03-15: tmknight: v1.0.0.0: First commit; Start-Multithreading function
 			* 2017-04-28: tmknight: v1.1.0.0: Added Fast-Ping module
@@ -70,7 +72,8 @@
             * 2018-08-05: tmknight: v1.5.3.13: Update Start-FastPing to handle IP addresses
             * 2019-11-22: tmknight: v1.5.3.14: Add Get-NetworkInfo which will work in PS core on Linux: Credit https://github.com/pldmgg
             * 2019-11-22: tmknight: v1.5.3.15: Write-InlineProgress: Number format to zero places.  Fix assessment of $PSHOME to match windows directory path format
-            * 2021-02-12: tmknight: v1.5.3.16: Start-Fast-Ping: Correct Port parameter to be optional; no default value'
+            * 2021-02-12: tmknight: v1.5.3.16: Start-Fast-Ping: Correct Port parameter to be optional; no default value
+            * 2021-03-16: tmknight: v1.5.4.0: New commandlet Get-ADGroupMembership'
         }
     }
 }
