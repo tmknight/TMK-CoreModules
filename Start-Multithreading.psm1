@@ -56,14 +56,14 @@
             )
             Test-Connection $ComputerName -Count $count
         }
-.PARAMETER MaxThreads
+.PARAMETER ThrottleLimit
     This paramater is not mandatory, though it is where you can set the maximum concurrent threads or jobs.
     This setting in memory dependent and too large a value may exceed available memory.
     It is recommended to not exceed 100 threads for the above reasons as well as the last couple of threads occassionally stall for an extended
     period of time when this value is set larger.
     If no value is set, the default of 20 threads will be applied
 
-        $MaxThreads = 50
+        $ThrottleLimit = 50
 .PARAMETER NoProgress
     A switch to disable activity progress.
     NOTE: When executing in VS-Code, the Write-InlineProgress command from TMK-CoreModules must be present
@@ -77,6 +77,7 @@
 	Date: 2018-08-09: tmknight: Clarify "Arguments" parameter.
 	Date: 2018-10-19: tmknight: Rename "InputObject" parameter to be in alignment with other PS modules.
 	Date: 2018-12-18: tmknight: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules.
+	Date: 2021-12-08: tmknight: Rename "MaxThreads" to "ThrottleLimit" to be in alignment with other PS modules.
 .LINK
     https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/26/beginning-use-of-powershell-runspaces-part-1/
     https://github.com/tmknight/TMK-CoreModules
@@ -105,7 +106,8 @@ function Start-Multithreading {
         # Maximum concurrent threads to start
         [Parameter(Mandatory = $false,
             Position = 3)]
-        [int]$MaxThreads = 20,
+        [Alias("MaxThreads")]
+        [int]$ThrottleLimit = 20,
 
         # Whether progress is displayed
         [Parameter(Mandatory = $false,
@@ -116,7 +118,7 @@ function Start-Multithreading {
     Begin {
         ## Establish runspace pool
         $RunspaceCollection = @()
-        $RunspacePool = [RunspaceFactory]::CreateRunspacePool(1, $MaxThreads)
+        $RunspacePool = [RunspaceFactory]::CreateRunspacePool(1, $ThrottleLimit)
         $RunspacePool.Open()
 
         ## Counter variable to assess progress
