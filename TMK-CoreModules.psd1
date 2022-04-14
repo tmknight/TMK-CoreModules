@@ -2,7 +2,7 @@
 # Module manifest for shared modules'
 ###
 @{
-    ModuleVersion     = '1.5.4.1'
+    ModuleVersion     = '1.5.4.2'
     GUID              = '0c83f152-41a4-4997-92da-c06923fb3e12'
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
@@ -74,7 +74,8 @@
             * 2019-11-22: tmknight: v1.5.3.15: Write-InlineProgress: Number format to zero places.  Fix assessment of $PSHOME to match windows directory path format
             * 2021-02-12: tmknight: v1.5.3.16: Start-Fast-Ping: Correct Port parameter to be optional; no default value
             * 2021-03-16: tmknight: v1.5.4.0: New commandlet Get-ADGroupMembership
-            * 2021-03-16: tmknight: v1.5.4.1: Start-MultiThreading code cleanup'
+            * 2021-03-16: tmknight: v1.5.4.1: Start-MultiThreading code cleanup
+            * 2022-04-14: tmknight: v1.5.4.2: Update Get-ADSite to use ActiveDirectory module'
         }
     }
 }
