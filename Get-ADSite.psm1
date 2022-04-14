@@ -93,7 +93,11 @@ function  Get-ADSite {
         [string] $ComputerName,
         [Parameter(ParameterSetName = "p0",
             Mandatory = $false,
-            Position = 1)]
+            Position=1)]
+        [string] $Domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain,
+        [Parameter(ParameterSetName = "p0",
+            Mandatory = $false,
+            Position = 2)]
         [switch] $Full,
         [Parameter(ParameterSetName = "p1",
             Mandatory = $false)]
@@ -101,9 +105,6 @@ function  Get-ADSite {
         [Parameter(ParameterSetName = "p2",
             Mandatory = $false)]
         [string] $Subnet,
-        [Parameter(ParameterSetName = "p2",
-            Mandatory = $false)]
-        [string] $Domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain,
         [Parameter(ParameterSetName = "p3",
             HelpMessage = "A switch that will simply get ALL known sites and subnets. No other parameter will be assessed",
             Mandatory = $false)]
