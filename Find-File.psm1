@@ -1,14 +1,14 @@
 <#
 .SYNOPSIS
-   Module for finding files using multithreading
+    Module for finding files using multithreading
 .DESCRIPTION
-   Use this module to find files faster than can be accomplished with Get-ChildItem alone
+    Use this module to find files faster than can be accomplished with Get-ChildItem alone
 .EXAMPLE
     Find-File -Path $pth -File "nmap-update.exe"
 
     C:\Program Files (x86)\Nmap\nmap-update.exe
 .PARAMETER Path
-	This parameter is manadatory and is in the form of an absolute path.
+    This parameter is manadatory and is in the form of an absolute path.
     The path must be terminiated with "\"
 
     $pth = "c:\"
@@ -25,14 +25,14 @@
 
     $file = "nmap-update"
 .PARAMETER MaxThreads
-	This parameter is an optional integer
+    This parameter is an optional integer
 
     $MaxThreads = 100
 .PARAMETER NoProgress
     This paramater is an option switch that will turn off visual progress
 .NOTES
-	Author: Travis M Knight; tmknight
-	Date: 2019-04-16: tmknight: Inception
+    Author: Travis M Knight; tmknight
+    Date: 2019-04-16: tmknight: Inception
     Date: 2022-07-20: tmknight: New logic to allow for UNC paths and avoid double-seraching the source path
 #>
 
@@ -61,7 +61,7 @@ function Find-File {
     )
 
     Begin {
-        $regExPath = ($Path -replace "\\","\\" -replace "\$","\$").TrimEnd('\')
+        $regExPath = ($Path -replace "\\", "\\" -replace "\$", "\$").TrimEnd('\')
         $regEx = "([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)"
         try {
             $dirs = (Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue).FullName
