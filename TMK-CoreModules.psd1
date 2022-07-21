@@ -37,8 +37,8 @@
                 'groups', 'group membership'
             )
             ReleaseNotes = '* 2017-03-15: tmknight: v1.0.0.0: First commit; Start-Multithreading function
-			* 2017-04-28: tmknight: v1.1.0.0: Added Fast-Ping module
-			* 2017-05-03: tmknight: v1.2.0.0: Updated Start-Multithreading module
+            * 2017-04-28: tmknight: v1.1.0.0: Added Fast-Ping module
+            * 2017-05-03: tmknight: v1.2.0.0: Updated Start-Multithreading module
             * 2017-05-22: tmknight: v1.3.0.0: Added Get-OUObjects module
             * 2017-05-24: tmknight: v1.4.0.0: Added Get-ADSite module
             * 2017-05-25: tmknight: v1.5.0.0: Added full site details to Get-ADSite function when querying a computer
@@ -76,8 +76,8 @@
             * 2021-03-16: tmknight: v1.5.4.0: New commandlet Get-ADGroupMembership
             * 2021-03-16: tmknight: v1.5.4.1: Start-MultiThreading code cleanup
             * 2022-04-14: tmknight: v1.5.4.2: Update Get-ADSite to use ActiveDirectory module
-	    * 2022-07-20: tmknight: v1.5.4.3: Update Find-File to allow UNC path and avoid double-search of source path
-	    * 2022-07-21: tmknight: v1.5.4.3: Update Write-InlineProgress to randomize temp filename and code cleanup'
+            * 2022-07-20: tmknight: v1.5.4.3: Update Find-File to allow UNC path and avoid double-search of source path
+            * 2022-07-21: tmknight: v1.5.4.3: Update Write-InlineProgress to randomize temp filename and code cleanup'
         }
     }
 }
