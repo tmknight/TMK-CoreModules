@@ -45,20 +45,17 @@ function Write-InlineProgress {
         ## Set percent value to two decimal places
         $perc = "{0:N0}" -f $PercentComplete
 
-        ## Capture current console colors
+        ## If necessary, capture current console colors to reinstate them after progress completes
         $curBackgroundColor = [System.Console]::BackgroundColor
         $curForegroundColor = [System.Console]::ForegroundColor
-        if ($PSHOME -match "\:\\") {
-            $tmpColors = "$env:TEMP\ConsoleColor.csv"
+        $random = (1..8 | ForEach-Object { '{0:X}' -f (Get-Random -Max 16) }) -join ''
+        $tmpFile = "ConsoleColor_$random.csv"
+        if ($PSVersionTable.OS -match "Windows") {
+            $tmpColors = "$env:TEMP\$tmpFile"
         }
         else {
-            $tmpColors = "/tmp/ConsoleColor.csv"
+            $tmpColors = "/tmp/$tmpFile"
         }
-
-        [PSCustomObject]@{
-            BackgroundColor = $curBackgroundColor
-            ForegroundColor = $curForegroundColor
-        } | Export-Csv -Path $tmpColors -NoTypeInformation -Force -Confirm:$false
     }
     process {
         $ErrorActionPreference = "Stop"
@@ -70,6 +67,12 @@ function Write-InlineProgress {
                         Write-Progress -Activity $Activity -PercentComplete $perc -Status "$perc%"
                     }
                     else {
+                        ## Capture current console colors
+                        [PSCustomObject]@{
+                            BackgroundColor = $curBackgroundColor
+                            ForegroundColor = $curForegroundColor
+                        } | Export-Csv -Path $tmpColors -NoTypeInformation -Force -Confirm:$false
+
                         $val = " $Activity $perc%    "
                         $CursorY = $host.UI.RawUI.CursorPosition.Y
                         [System.Console]::BackgroundColor = [System.ConsoleColor]::Cyan
@@ -90,7 +93,7 @@ function Write-InlineProgress {
     end {
         switch ($host.Name) {
             "Visual Studio Code Host" {
-                ## Clear progress line in keeping with Write-Progress
+                ## Clear progress line in keeping with Write-Progress and reinstate console colors
                 if ($psEditor.EditorServicesVersion -lt "2.0.0.0") {
                     $colors = Import-Csv -Path $tmpColors
                     $CursorY = $host.UI.RawUI.CursorPosition.Y
@@ -98,10 +101,11 @@ function Write-InlineProgress {
                     [System.Console]::ForegroundColor = [System.ConsoleColor]::($colors.ForegroundColor).ToString()
                     [System.Console]::SetCursorPosition(0, $CursorY)
                     [System.Console]::Write("")
+
+                    ## Remove temp color file
+                    Remove-Item -Path $tmpColors -Force -Confirm:$false -ErrorAction SilentlyContinue
                 }
             }
         }
-        ## Remove temp color file
-        Remove-Item -Path $tmpColors -Force -Confirm:$false -ErrorAction SilentlyContinue
     }
 }
