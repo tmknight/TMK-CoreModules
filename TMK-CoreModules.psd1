@@ -78,7 +78,7 @@
             * 2022-04-14: tmknight: v1.5.4.2: Update Get-ADSite to use ActiveDirectory module
             * 2022-07-20: tmknight: v1.5.4.3: Update Find-File to allow UNC path and avoid double-search of source path
             * 2022-07-21: tmknight: v1.5.4.3: Update Write-InlineProgress to randomize temp filename and code cleanup
-            * 2022-07-21: tmknight: v1.5.4.4: Update Find-File, Start-MultiThreading and code cleanup'
+            * 2022-08-18: tmknight: v1.5.4.4: Update Find-File, Start-MultiThreading and code cleanup'
         }
     }
 }
