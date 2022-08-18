@@ -28,12 +28,13 @@
     This parameter is an optional integer
 
     $MaxThreads = 100
-.PARAMETER NoProgress
+.PARAMETER Quiet
     This paramater is an option switch that will turn off visual progress
 .NOTES
     Author: Travis M Knight; tmknight
     Date: 2019-04-16: tmknight: Inception
     Date: 2022-07-20: tmknight: New logic to allow for UNC paths and avoid double-seraching the source path
+    Date: 2022-08-18: tmknight: New logic to get search path into more threads to speed up search
 #>
 
 function Find-File {
@@ -53,42 +54,69 @@ function Find-File {
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $false,
             Position = 2)]
-        [int]$MaxThreads = 20,
+        [int]$MaxThreads = 100,
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $false,
             Position = 3)]
-        [switch]$NoProgress
+        [Alias("NoProgress")]
+        [switch]$Quiet
     )
 
     Begin {
         $regExPath = ($Path -replace "\\", "\\" -replace "\$", "\$").TrimEnd('\')
         $regEx = "([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)"
         try {
+            Write-Verbose -Message "Getting root path directories"
             $dirs = (Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue).FullName
+
             if ($dirs -match "\w{1,}") {
-                if ($Path -notmatch "$regEx\\Windows") {
-                    if ($dirs -match "$regEx\\Windows\b") {
-                        $title = 'A "Windows" directory is in your search; this may take a very long time to complete.'
-                        $prompt = ''
-                        $abort = New-Object System.Management.Automation.Host.ChoiceDescription '&Abort', 'Aborts the operation'
-                        $continue = New-Object System.Management.Automation.Host.ChoiceDescription '&Continue', 'Continues the operation'
-                        $options = [System.Management.Automation.Host.ChoiceDescription[]] ($abort, $continue)
-                        $choice = $host.ui.PromptForChoice($title, $prompt, $options, 0)
-                        if ($choice -eq 0) {
-                            break
+                $level = "root"
+                if ($dirs -match "$regEx\\Windows\b") {
+                    $title = 'A "Windows" directory is in your search; this may take a very long time to complete.'
+                    $prompt = ''
+                    $abort = New-Object System.Management.Automation.Host.ChoiceDescription '&Abort', 'Aborts the operation'
+                    $continue = New-Object System.Management.Automation.Host.ChoiceDescription '&Continue', 'Continues the operation'
+                    $options = [System.Management.Automation.Host.ChoiceDescription[]] ($abort, $continue)
+                    $choice = $host.ui.PromptForChoice($title, $prompt, $options, 0)
+                    if ($choice -eq 0) {
+                        break
+                    }
+                }
+
+                if ($dirs.Count -le 50) {
+                    Write-Verbose -Message "Getting second level directories"
+                    $dirsExt0 = ($dirs | Get-ChildItem -Directory -ErrorAction SilentlyContinue).FullName
+                    if ($dirsExt0 -match "\w{1,}") {
+                        Write-Verbose -Message "Getting third level directories"
+                        $dirsExt1 = ($dirsExt0 | Get-ChildItem -Directory -ErrorAction SilentlyContinue).FullName
+                    }
+
+                    Write-Verbose -Message "Determining valid search paths"
+                    $dirs = $dirs -replace "$regExPath$" | Where-Object { $_.trim() -ne "" }
+                    if ($dirsExt0 -match "\w{1,}") {
+                        $level = "second"
+                        $dirsExt0 = $dirsExt0 -replace "$regExPath$" | Where-Object { $_.trim() -ne "" }
+                        if ($dirsExt1 -notmatch "\w{1,}" -or $dirsExt1 -gt 1000) {
+                            $dirsExt1 = $dirsExt0
+                            $dirsExt0 = $null
                         }
                         else {
-                            ## Remove 'Windows' directory from the list and replace with sub-directories of 'Windows'
-                            $dirWin = $dirs -match "$regEx\\Windows\b"
-                            $dirs = $dirs -replace "$regEx\\Windows\b" | Where-Object { $_.trim() -ne "" }
-                            $dirs = $dirs -replace "$regExPath$" | Where-Object { $_.trim() -ne "" }
-                            $dirs += (Get-ChildItem -Path $dirWin -Directory -ErrorAction SilentlyContinue).FullName
+                            $dirsExt1 = $dirsExt1 -replace "$regExPath$" | Where-Object { $_.trim() -ne "" }
+                            $level = "third"
                         }
                     }
+                    else {
+                        $dirsExt1 = $dirs
+                        $dirs = $null
+                    }
+                }
+                else {
+                    $dirsExt1 = $dirs
+                    $dirs = $null
                 }
             }
             else {
-                Write-Error -Message "The $Path indicated does not appear to be valid.  Please ensure a fully qualified path"
+                Write-Error -Message "The path indicated does not appear to be valid.  Please ensure a fully qualified path and that it is accessible: $Path"
             }
         }
         catch {
@@ -117,11 +145,51 @@ function Find-File {
         }
     }
     Process {
-        $out = Start-Multithreading -InputObject $dirs -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -NoProgress:$NoProgress | Sort-Object -Property File -Unique
-        ## Search root of $Path and 'Windows' directory
-        $out += Get-ChildItem -Path $Path -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue
-        if ($dirWin -match "\w{1,}") {
-            $out += Get-ChildItem -Path $dirWin -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue
+        Write-Verbose -Message "Searching $level level directories"
+        $out = Start-Multithreading -InputObject $dirsExt1 -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -Quiet:$Quiet | Sort-Object -Property File -Unique
+
+        ## Search root of $Path and extended root directories
+        Write-Verbose -Message "Searching root path"
+        $in = (Get-ChildItem -Path $Path -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
+        if ($null -eq $out -and $null -ne $in) {
+            $in | ForEach-Object {
+                $out += [PSCustomObject]@{
+                    File = $_
+                }
+            }
+        }
+        else {
+            $out += $in
+        }
+
+        if ($dirsExt0 -match "\w{1,}") {
+            Write-Verbose -Message "Searching second level directories"
+            $in0 = (Get-ChildItem -Path $dirsExt0 -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
+            if ($null -eq $out -and $null -ne $in0) {
+                $in0 | ForEach-Object {
+                    $out += [PSCustomObject]@{
+                        File = $_
+                    }
+                }
+            }
+            else {
+                $out += $in0
+            }
+        }
+
+        if ($dirs -match "\w{1,}") {
+            Write-Verbose -Message "Searching root path directories"
+            $in1 = (Get-ChildItem -Path $dirs -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
+            if ($null -eq $out -and $null -ne $in1) {
+                $in1 | ForEach-Object {
+                    $out += [PSCustomObject]@{
+                        File = $_
+                    }
+                }
+            }
+            else {
+                $out += $in1
+            }
         }
     }
     End {

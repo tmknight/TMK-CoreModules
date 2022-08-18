@@ -64,7 +64,7 @@
     If no value is set, the default of 20 threads will be applied
 
         $ThrottleLimit = 50
-.PARAMETER NoProgress
+.PARAMETER Quiet
     A switch to disable activity progress.
     NOTE: When executing in VS-Code, the Write-InlineProgress command from TMK-CoreModules must be present
 .NOTES
@@ -78,6 +78,7 @@
 	Date: 2018-10-19: tmknight: Rename "InputObject" parameter to be in alignment with other PS modules.
 	Date: 2018-12-18: tmknight: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules.
 	Date: 2021-12-08: tmknight: Rename "MaxThreads" to "ThrottleLimit" to be in alignment with other PS modules.
+	Date: 2022-08-18: tmknight: Rename "NoProgress" to "Quiet" to be in alignment with other PS modules.
 .LINK
     https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/26/beginning-use-of-powershell-runspaces-part-1/
     https://github.com/tmknight/TMK-CoreModules
@@ -112,7 +113,8 @@ function Start-Multithreading {
         # Whether progress is displayed
         [Parameter(Mandatory = $false,
             Position = 4)]
-        [switch]$NoProgress
+        [Alias("NoProgress")]
+        [switch]$Quiet
     )
 
     Begin {
@@ -128,8 +130,8 @@ function Start-Multithreading {
         $ErrorActionPreference = 'SilentlyContinue'
         switch ($Host.Name) {
             "Visual Studio Code Host" {
-                if (!(Get-Command -Name Write-InlineProgress) -and $NoProgress -eq $false) {
-                    $NoProgress = $true
+                if (!(Get-Command -Name Write-InlineProgress) -and $Quiet -eq $false) {
+                    $Quiet = $true
                     $message = "The command Write-InlineProgress is required when executing via VS-Code and does not exist.`n" +
                     "Please import `"TMK-CoreModules`" from https://github.com/tmknight/TMK-CoreModules. Continuing without progress."
                     Write-Warning -Message $message
@@ -158,7 +160,7 @@ function Start-Multithreading {
         ## Keep track of open threads and terminate when all have completed
         While ($RunspaceCollection.Count -gt 0) {
             Foreach ($Runspace in $RunspaceCollection.ToArray()) {
-                if ($NoProgress.IsPresent -eq $false) {
+                if ($Quiet.IsPresent -eq $false) {
                     $perc = ($c / $count * 100)
                     Write-InlineProgress -Activity "$c of $count threads completed" `
                         -PercentComplete $perc
@@ -173,7 +175,7 @@ function Start-Multithreading {
             }
         }
 
-        if ($NoProgress.IsPresent -eq $false) {
+        if ($Quiet.IsPresent -eq $false) {
             ## Force progress to 100
             $c = $count
             $perc = 100
