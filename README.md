@@ -1,2 +1,2 @@
 # Introduction 
-Collection of modules to ease system management in the enterprise
+Collection of PowerShell modules to ease system management in the enterprise
