@@ -2,13 +2,13 @@
 # Module manifest for shared modules'
 ###
 @{
-    ModuleVersion     = '1.5.4.4'
+    ModuleVersion     = '1.5.5'
     GUID              = '0c83f152-41a4-4997-92da-c06923fb3e12'
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
     Copyright         = '(c)TMK World Headquarters'
     Description       = 'Shared module of common functions'
-    PowerShellVersion = '4.0'
+    PowerShellVersion = '5.0'
     FunctionsToExport = '*'
     VariablesToExport = '*'
     AliasesToExport   = '*'
@@ -78,7 +78,8 @@
             * 2022-04-14: tmknight: v1.5.4.2: Update Get-ADSite to use ActiveDirectory module
             * 2022-07-20: tmknight: v1.5.4.3: Update Find-File to allow UNC path and avoid double-search of source path
             * 2022-07-21: tmknight: v1.5.4.3: Update Write-InlineProgress to randomize temp filename and code cleanup
-            * 2022-08-18: tmknight: v1.5.4.4: Update Find-File, Start-MultiThreading and code cleanup'
+            * 2022-08-18: tmknight: v1.5.4.4: Update Find-File, Start-MultiThreading and code cleanup
+            * 2023-01-06: tmknight: v1.5.5: Remove support for PowerShell v4.0 and change to semantic versioning'
         }
     }
 }
