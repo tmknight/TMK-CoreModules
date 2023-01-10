@@ -189,7 +189,8 @@ Function Start-FastPing {
         }
 
         if ($Port) {
-            $rslt | Add-Member -MemberType NoteProperty -Name "Port $Port Open" -Value (portKnock -cn $ComputerName -prt $Port)
+            $rslt | Add-Member -MemberType NoteProperty -Name "RemotePort" -Value $Port
+            $rslt | Add-Member -MemberType NoteProperty -Name "TcpTestSucceeded" -Value (portKnock -cn $ComputerName -prt $Port)
         }
 
     }
