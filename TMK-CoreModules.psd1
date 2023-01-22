@@ -71,12 +71,12 @@
         PSData = @{
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags                       = @(
-                'multithreading', 'multi-threading', 'multi threading',
-                'fastping', 'fast-ping', 'fast ping',
-                'adouobject', 'ad-ou-object', 'ad ou object',
-                'adsite', 'ad-site', 'ad site',
-                'write progress', 'Find-File', 'find file',
-                'groups', 'group membership'
+                'parallel', 'multithreading', 'multi-threading',
+                'ping', 'fastping', 'fast-ping',
+                'Find-File',
+                'ad', 'groups', 'groupmembership', 'group-membership', 'ad-object', 'adouobject', 'ou-object', 'ad-ou-object', 'adsite', 'ad-site',
+                'network', 'networkinfo', 'network-info',
+                'progress', 'writeprogress', 'write-progress', 'inlineprogress', 'inline-progress'
             )
 
             # A URL to the license for this module.
