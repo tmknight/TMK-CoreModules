@@ -9,7 +9,7 @@
     Author            = 'Travis M Knight'
     CompanyName       = 'TMK World Headquarters'
     Copyright         = '(c)TMK World Headquarters'
-    Description       = 'Shared module of common functions'
+    Description       = 'Collection of modules to ease system management in the enterprise'
     PowerShellVersion = '5.0'
     CmdletsToExport   = @()
     AliasesToExport   = @()
@@ -20,9 +20,9 @@
         'Copy-WithProgress',
         'Find-File',
         'Get-ADGroupMembership',
+        'Get-ADOUObject',
         'Get-ADSite',
         'Get-NetworkInfo',
-        'Get-OUObject',
         'Start-FastPing',
         'Start-Multithreading',
         'Test-SubnetMember',
@@ -34,9 +34,9 @@
         'Copy-WithProgress',
         'Find-File',
         'Get-ADGroupMembership',
+        'Get-ADOUObject',
         'Get-ADSite',
         'Get-NetworkInfo',
-        'Get-OUObject',
         'Start-FastPing',
         'Start-Multithreading',
         'Test-SubnetMember',
@@ -48,9 +48,9 @@
         'Copy-WithProgress.psm1',
         'Find-File.psm1',
         'Get-ADGroupMembership.psm1',
+        'Get-ADOUObject.psm1',
         'Get-ADSite.psm1',
         'Get-NetworkInfo.psm1',
-        'Get-OUObject.psm1',
         'LICENSE',
         'README.md',
         'Start-FastPing.psm1',
@@ -67,8 +67,7 @@
             Tags                     = @(
                 'multithreading', 'multi-threading', 'multi threading',
                 'fastping', 'fast-ping', 'fast ping',
-                'ouobjects', 'ou-objects', 'ou objects',
-                'ouobject', 'ou-object', 'ou object',
+                'adouobject', 'ad-ou-object', 'ad ou object',
                 'adsite', 'ad-site', 'ad site',
                 'write progress', 'Find-File', 'find file',
                 'groups', 'group membership'
@@ -88,7 +87,7 @@
             ReleaseNotes             = '* 2017-03-15: tmknight: v1.0.0.0: First commit; Start-Multithreading function
             * 2017-04-28: tmknight: v1.1.0.0: Added Fast-Ping module
             * 2017-05-03: tmknight: v1.2.0.0: Updated Start-Multithreading module
-            * 2017-05-22: tmknight: v1.3.0.0: Added Get-OUObjects module
+            * 2017-05-22: tmknight: v1.3.0.0: Added Get-ADOUObjects module
             * 2017-05-24: tmknight: v1.4.0.0: Added Get-ADSite module
             * 2017-05-25: tmknight: v1.5.0.0: Added full site details to Get-ADSite function when querying a computer
             * 2017-06-06: tmknight: v1.5.1.0: Added OS version to computer query;
@@ -102,12 +101,12 @@
             * 2017-10-17: tmknight: v1.5.2.3: Code cleanup
             * 2017-10-19: tmknight: v1.5.2.4: Code cleanup
             * 2017-10-20: tmknight: v1.5.2.5: Change "Lookup" parameter to switch statement in Start-FastPing module
-            * 2017-10-24: tmknight: v1.5.2.6: Add additional user attributes returned in Get-OUObjects module
+            * 2017-10-24: tmknight: v1.5.2.6: Add additional user attributes returned in Get-ADOUObjects module
             * 2017-10-25: tmknight: v1.5.3.0: Added Write-InlineProgress module
             * 2017-11-01: tmknight: v1.5.3.1: Refined PC site query to permit query of localhost
             * 2017-11-03: tmknight: v1.5.3.2: Refined Write-InlineProgress to permit decimals
-            * 2017-11-30: tmknight: v1.5.3.3: Updates to Get-OUObject and Start-Multithreading
-            * 2018-02-07: tmknight: v1.5.3.4: Updates to Get-OUObject to return additional information when no records found;
+            * 2017-11-30: tmknight: v1.5.3.3: Updates to Get-ADOUObject and Start-Multithreading
+            * 2018-02-07: tmknight: v1.5.3.4: Updates to Get-ADOUObject to return additional information when no records found;
                 update to Start-Multithreading with added switch to not show progress if desired for silent execution;
                 update to Start-Multithreading with paramter verbiage change from LoopObjects to InputObjects
             * 2018-02-14: tmknight: v1.5.3.4: Add logic to force progress to 100% when all operations complete
@@ -116,7 +115,7 @@
             * 2018-12-18: tmknight: v1.5.3.7: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules
             * 2018-04-02: tmknight: Update to Write-InlineProgress to account for vscode-powershell 2.x which now supports Write-Progress
             * 2018-04-16: tmknight: Addition of Find-File module
-            * 2018-04-24: tmknight: Rename Get-OUObject; update Get-OUObject
+            * 2018-04-24: tmknight: Rename Get-ADOUObject; update Get-ADOUObject
             * 2018-07-08: tmknight: Update Write-InlineProgress; code host release broke Write-Progress again
             * 2018-08-05: tmknight: v1.5.3.13: Update Start-FastPing to handle IP addresses
             * 2019-11-22: tmknight: v1.5.3.14: Add Get-NetworkInfo which will work in PS core on Linux: Credit https://github.com/pldmgg
@@ -130,7 +129,7 @@
             * 2022-08-18: tmknight: v1.5.4.4: Update Find-File, Start-MultiThreading and code cleanup
             * 2023-01-06: tmknight: v1.5.5: Remove support for PowerShell v4.0 and change to semantic versioning
             * 2023-01-10: tmknight: v1.5.6: Align Start-FastPing output with Test-NetConnection
-            * 2023-01-22: tmknight: v1.5.7: Update manifest for publishing to PSGallery'
+            * 2023-01-22: tmknight: v1.5.7: Rename Get-OUObject to Get-ADOUObject; update manifest for publishing to PSGallery'
         }
     }
 }
