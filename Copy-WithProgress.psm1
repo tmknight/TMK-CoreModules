@@ -29,39 +29,41 @@ function Copy-WithProgress {
     Param
     (
         [Parameter(Mandatory = $true,
+            ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
             Position = 0)]
         [string]$Source,
 
         [Parameter(Mandatory = $true,
+            ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
             Position = 1)]
         [string]$Destination,
 
         [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $false,
             Position = 2)]
         [string]$Message = "File Copy Progress:"
     )
 
-    $Source = $Source.tolower()
-
-    $Filelist = Get-ChildItem $Source –Recurse
-
-    $Total = $Filelist.count
-
-    $Position = 0
-    try {
-        ForEach ($File in $Filelist) {
-            $Filename = $File.Fullname.tolower().replace($Source, '')
-            $DestinationFile = ($Destination + $Filename)
-            Write-InlineProgress -activity $Message -PercentComplete (($Position / $total) * 100)
-            Copy-Item $File.FullName -Destination $DestinationFile -Force
-            $Position++
-        }
-        Write-InlineProgress -Activity $Message -PercentComplete 100
+    Begin {
+        $Source = $Source.tolower()
+        $Filelist = Get-ChildItem $Source –Recurse
+        $Total = $Filelist.count
+        $Position = 0
     }
-    catch {
-        $_.Exception
+    Process {
+        try {
+            ForEach ($File in $Filelist) {
+                $Filename = $File.Fullname.tolower().replace($Source, '')
+                $DestinationFile = ($Destination + $Filename)
+                Write-InlineProgress -activity $Message -PercentComplete (($Position / $total) * 100)
+                Copy-Item $File.FullName -Destination $DestinationFile -Force
+                $Position++
+            }
+            Write-InlineProgress -Activity $Message -PercentComplete 100
+        }
+        catch {
+            $_.Exception
+        }
     }
 }
