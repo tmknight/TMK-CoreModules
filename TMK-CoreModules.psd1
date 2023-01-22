@@ -12,7 +12,7 @@
     Description       = 'Shared module of common functions'
     PowerShellVersion = '5.0'
     CmdletsToExport   = @()
-    AliasesToExport    = @()
+    AliasesToExport   = @()
     VariablesToExport = @()
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
@@ -50,7 +50,6 @@
         'Get-ADGroupMembership.psm1',
         'Get-ADSite.psm1',
         'Get-NetworkInfo.psm1',
-        'Get-OUObject_v2-0.psm1',
         'Get-OUObject.psm1',
         'LICENSE',
         'README.md',
@@ -65,7 +64,7 @@
     PrivateData       = @{
         PSData = @{
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags                       = @(
+            Tags                     = @(
                 'multithreading', 'multi-threading', 'multi threading',
                 'fastping', 'fast-ping', 'fast ping',
                 'ouobjects', 'ou-objects', 'ou objects',
@@ -76,16 +75,17 @@
             )
 
             # A URL to the license for this module.
-            LicenseUri                 = 'https://github.com/tmknight/TMK-CoreModules/blob/master/LICENSE'
+            LicenseUri               = 'https://github.com/tmknight/TMK-CoreModules/blob/master/LICENSE'
+            RequireLicenseAcceptance = $false
 
             # A URL to the main website for this project.
-            ProjectUri                 = 'https://github.com/tmknight/TMK-CoreModules'
+            ProjectUri               = 'https://github.com/tmknight/TMK-CoreModules'
 
-            # External dependent modules of this module
-            ExternalModuleDependencies = @("ActiveDirectory")
+            # Modules that must be imported into the global environment prior to importing this module
+            RequiredModules          = @("ActiveDirectory")
 
             # ReleaseNotes of this module
-            ReleaseNotes               = '* 2017-03-15: tmknight: v1.0.0.0: First commit; Start-Multithreading function
+            ReleaseNotes             = '* 2017-03-15: tmknight: v1.0.0.0: First commit; Start-Multithreading function
             * 2017-04-28: tmknight: v1.1.0.0: Added Fast-Ping module
             * 2017-05-03: tmknight: v1.2.0.0: Updated Start-Multithreading module
             * 2017-05-22: tmknight: v1.3.0.0: Added Get-OUObjects module
