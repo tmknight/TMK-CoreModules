@@ -93,10 +93,6 @@ function  Get-ADSite {
         [string] $ComputerName,
         [Parameter(ParameterSetName = "p0",
             Mandatory = $false,
-            Position=1)]
-        [string] $Domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain,
-        [Parameter(ParameterSetName = "p0",
-            Mandatory = $false,
             Position = 2)]
         [switch] $Full,
         [Parameter(ParameterSetName = "p1",
