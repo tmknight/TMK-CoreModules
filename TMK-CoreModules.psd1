@@ -12,7 +12,7 @@
     Description       = 'Shared module of common functions'
     PowerShellVersion = '5.0'
     CmdletsToExport   = @()
-    liasesToExport    = @()
+    AliasesToExport    = @()
     VariablesToExport = @()
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
