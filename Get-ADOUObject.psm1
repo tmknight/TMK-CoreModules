@@ -32,10 +32,6 @@
     This paramater is not mandatory; wildcards (*) are accepted
 
     $OperatingSystem = "Windows 10*"
-.PARAMETER Description
-    This paramater is not mandatory; wildcards (*) are accepted
-
-    $Description = "*PC owned by*"
 .NOTES
 	Author: Travis M Knight; tmknight
 	Date: 2017-05-22: tmknight: Inception
@@ -82,12 +78,7 @@ function Get-ADOUObject {
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
             Position = 4)]
-        $OperatingSystem = '*',
-        [Parameter(Mandatory = $false,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            Position = 5)]
-        $Description = '*'
+        $OperatingSystem = '*'
     )
 
     begin {
@@ -200,3 +191,4 @@ function Get-ADOUObject {
         }
     }
 }
+Set-Alias -Name Get-OUObject -Value Get-ADOUObject
