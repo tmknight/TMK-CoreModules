@@ -1,0 +1,41 @@
+name: Publish PowerShell Module
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  lint-with-PSScriptAnalyzer:
+    name: Install and run PSScriptAnalyzer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install PSScriptAnalyzer module
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -ErrorAction Stop
+      - name: Lint with PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Invoke-ScriptAnalyzer -Path *.psm1 -Recurse -Outvariable issues
+          $errors   = $issues.Where({$_.Severity -eq 'Error'})
+          $warnings = $issues.Where({$_.Severity -eq 'Warning'})
+          if ($errors) {
+              Write-Error "There were $($errors.Count) errors and $($warnings.Count) warnings total." -ErrorAction Stop
+          } else {
+              Write-Output "There were $($errors.Count) errors and $($warnings.Count) warnings total."
+          }
+
+  publish-to-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and publish
+        env:
+          NUGET_KEY: ${{ secrets.PSGALLERY_KEY }}
+        shell: pwsh
+        run: |
+          ./build.ps1 -Path /tmp/tempmodule
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Publish-Module -Path /tmp/tempmodule -NuGetApiKey $env:NUGET_KEY -Forece -Verbose

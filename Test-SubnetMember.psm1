@@ -5,21 +5,21 @@
     Use this module to test whether a full or partial IP is a member of a subnet boundary.
 
     Returns True or False
-.PARAMETER Subnet 
+.PARAMETER Subnet
     Enter the full or partial IP address to assess.
 .PARAMETER Boundary
     Enter the full boundary to test
-.EXAMPLE 
+.EXAMPLE
     Test-SubnetMember -Subnet 11.166.240 -Boundary 11.166.240.0/24
 
     True
-.EXAMPLE 
+.EXAMPLE
     Test-SubnetMember -Subnet 11.166.240.111 -Boundary 11.166.240.0/24
-    
+
     True
-.EXAMPLE 
+.EXAMPLE
     Test-SubnetMember -Subnet 11.166.240 -Boundary 11.39.240.0/23
-    
+
     False
 .NOTES
 	Author: Travis M Knight; tmknight; Travis.Knight@macys.com
@@ -31,60 +31,61 @@ function Test-SubnetMember {
     param(
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipelineByPropertyName = $true,
             Position = 0)]
         [string]$Subnet,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipelineByPropertyName = $true,
             Position = 1)]
         [string]$Boundary
     )
-    
-    # Replace any non-digit characters to ensure only dotted IP address
-    $Subnet = ($Subnet -split "\D") -join "." -replace "(\\{1,}\.){2,}", "."
-    
-    # Separate the network address and length
-    $network1, [int]$subnetlen1 = $Subnet.Split('/')
-    $network2, [int]$subnetlen2 = $Boundary.Split('/')
 
- 
-    # Convert network address to binary
-    [uint32] $unetwork1 = NetworkToBinary $network1
- 
-    [uint32] $unetwork2 = NetworkToBinary $network2
- 
- 
-    # Check if subnet length exists and is less then 32(/32 is host, single ip so no calculation needed) if so convert to binary
-    if ($subnetlen1 -lt 32) {
-        [uint32] $mask1 = SubToBinary $subnetlen1
+    Begin {
+        # Replace any non-digit characters to ensure only dotted IP address
+        $Subnet = ($Subnet -split "\D") -join "." -replace "(\\{1,}\.){2,}", "."
+
+        # Separate the network address and length
+        $network1, [int]$subnetlen1 = $Subnet.Split('/')
+        $network2, [int]$subnetlen2 = $Boundary.Split('/')
     }
- 
-    if ($subnetlen2 -lt 32) {
-        [uint32] $mask2 = SubToBinary $subnetlen2
-    }
- 
-    # Compare the results
-    if ($mask1 -and $mask2) {
-        # If both inputs are subnets check which is smaller and check if it belongs in the larger one
-        if ($mask1 -lt $mask2) {
+
+    Process {
+        # Convert network address to binary
+        [uint32] $unetwork1 = NetworkToBinary $network1
+
+        [uint32] $unetwork2 = NetworkToBinary $network2
+        # Check if subnet length exists and is less then 32(/32 is host, single ip so no calculation needed) if so convert to binary
+        if ($subnetlen1 -lt 32) {
+            [uint32] $mask1 = SubToBinary $subnetlen1
+        }
+
+        if ($subnetlen2 -lt 32) {
+            [uint32] $mask2 = SubToBinary $subnetlen2
+        }
+
+        # Compare the results
+        if ($mask1 -and $mask2) {
+            # If both inputs are subnets check which is smaller and check if it belongs in the larger one
+            if ($mask1 -lt $mask2) {
+                return CheckSubnetToNetwork $unetwork1 $mask1 $unetwork2
+            }
+            else {
+                return CheckNetworkToSubnet $unetwork2 $mask2 $unetwork1
+            }
+        }
+        ElseIf ($mask1) {
+            # If second input is address and first input is subnet check if it belongs
             return CheckSubnetToNetwork $unetwork1 $mask1 $unetwork2
         }
-        else {
+        ElseIf ($mask2) {
+            # If first input is address and second input is subnet check if it belongs
             return CheckNetworkToSubnet $unetwork2 $mask2 $unetwork1
         }
-    }
-    ElseIf ($mask1) {
-        # If second input is address and first input is subnet check if it belongs
-        return CheckSubnetToNetwork $unetwork1 $mask1 $unetwork2
-    }
-    ElseIf ($mask2) {
-        # If first input is address and second input is subnet check if it belongs
-        return CheckNetworkToSubnet $unetwork2 $mask2 $unetwork1
-    }
-    Else {
-        # If both inputs are ip check if they match
-        CheckNetworkToNetwork $unetwork1 $unetwork2
+        Else {
+            # If both inputs are ip check if they match
+            CheckNetworkToNetwork $unetwork1 $unetwork2
+        }
     }
 }
 
