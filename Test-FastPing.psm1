@@ -202,4 +202,3 @@ Function Test-FastPing {
     }
 }
 Set-Alias -Name Start-FastPing -Value Test-FastPing
-# Export-ModuleMember -Alias * -Function *

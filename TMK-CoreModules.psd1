@@ -14,13 +14,6 @@
     CmdletsToExport   = @()
     VariablesToExport = @()
 
-    # Aliases that are exported by the module
-    AliasesToExport   = @(
-        'Get-OUObject'
-        'Start-FastPing',
-        'Start-Multithreading'
-    )
-
     # List of all files packaged with this module
     FileList          = @(
         'Copy-WithProgress.psm1',
@@ -38,6 +31,20 @@
         'Write-InlineProgress.psm1'
     )
 
+    # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
+    NestedModules     = @(
+        'Copy-WithProgress',
+        'Find-File',
+        'Get-ADGroupMembership',
+        'Get-ADOUObject',
+        'Get-ADSite',
+        'Get-NetworkInfo',
+        'Invoke-Multithreading',
+        'Test-FastPing',
+        'Test-SubnetMember',
+        'Write-InlineProgress'
+    )
+
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
         'Copy-WithProgress',
@@ -52,18 +59,11 @@
         'Write-InlineProgress'
     )
 
-    # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    NestedModules     = @(
-        'Copy-WithProgress',
-        'Find-File',
-        'Get-ADGroupMembership',
-        'Get-ADOUObject',
-        'Get-ADSite',
-        'Get-NetworkInfo',
-        'Invoke-Multithreading',
-        'Test-FastPing',
-        'Test-SubnetMember',
-        'Write-InlineProgress'
+    # Aliases that are exported by the module
+    AliasesToExport   = @(
+        'Get-OUObject'
+        'Start-FastPing',
+        'Start-Multithreading'
     )
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.

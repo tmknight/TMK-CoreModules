@@ -194,4 +194,3 @@ function Invoke-Multithreading {
     }
 }
 Set-Alias -Name Start-Multithreading -Value Invoke-Multithreading
-# Export-ModuleMember -Alias * -Function *
