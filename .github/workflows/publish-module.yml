@@ -33,7 +33,5 @@ jobs:
           NUGET_KEY: ${{ secrets.PSGALLERY_KEY }}
         shell: pwsh
         run: |
-          # ./build.ps1 -Path /tmp/tempmodule
           Set-PSRepository PSGallery -InstallationPolicy Trusted
-          # Publish-Module -Path /tmp/tempmodule -NuGetApiKey $env:NUGET_KEY -Forece -Verbose
           Publish-Module -Path ./ -NuGetApiKey $env:NUGET_KEY -Forece -Verbose
