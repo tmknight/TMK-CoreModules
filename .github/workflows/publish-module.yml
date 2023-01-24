@@ -1,12 +1,13 @@
 name: Publish Module
 
 on:
+  workflow_dispatch:
   release:
     types: [published]
 
 jobs:
-  lint-with-PSScriptAnalyzer:
-    name: Install and run PSScriptAnalyzer
+  lint-and-publish-to-gallery:
+    name: Run PSScriptAnalyzer and Publish to PSGallery
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,16 +27,13 @@ jobs:
           } else {
               Write-Output "There were $($errors.Count) errors and $($warnings.Count) warnings total."
           }
-
-  publish-to-gallery:
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v3
       - name: Build and publish
         env:
           NUGET_KEY: ${{ secrets.PSGALLERY_KEY }}
         shell: pwsh
         run: |
-          ./build.ps1 -Path /tmp/tempmodule
+          # ./build.ps1 -Path /tmp/tempmodule
           Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Publish-Module -Path /tmp/tempmodule -NuGetApiKey $env:NUGET_KEY -Forece -Verbose
+          # Publish-Module -Path /tmp/tempmodule -NuGetApiKey $env:NUGET_KEY -Forece -Verbose
+          Publish-Module -Path ./ -NuGetApiKey $env:NUGET_KEY -Forece -Verbose
