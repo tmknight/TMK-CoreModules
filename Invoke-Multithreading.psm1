@@ -181,8 +181,7 @@ function Invoke-Multithreading {
             $perc = 100
             Write-InlineProgress -Activity "$c of $count threads completed" `
                 -PercentComplete $perc
-            # [System.Console]::WriteLine()
-            Write-Output -InputObject ""
+            [System.Console]::WriteLine()
         }
     }
     End {
