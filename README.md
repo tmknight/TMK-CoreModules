@@ -8,6 +8,10 @@ The latest version is also available from [PowerShell Gallery][GitHubPublishLink
 
 `Install-Module -Name TMK-CoreModules -Repository PSGallery -Force -WarningAction SilentlyContinue`
 
+If TMK-CoreModules is already installed, obtain the latest release with:
+
+`Update-Module -Name TMK-CoreModules -Force -WarningAction SilentlyContinue`
+
 | Module                    | Description                                                                                                                                         |
 |:-------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------:|
 | **Copy-WithProgress**     | Module for writing file copy progress                                                                                                               |
