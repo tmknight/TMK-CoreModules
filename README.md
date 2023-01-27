@@ -14,7 +14,7 @@ If TMK-CoreModules is already installed, obtain the latest release with:
 
 | Module                    | Description                                                                                                                                         |
 |:-------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------:|
-| **Copy-WithProgress**     | Module for writing file copy progress                                                                                                               |
+| **Copy-WithProgress**     | Module for writing file copy progress (most useful on a large number of files/directories)                                                                                                              |
 | **Find-File**             | Module for quickly finding files using multi-threading                                                                                              |
 | **Get-ADGroupMembership** | Module for performing recursive lookup of the groups to which an Active Directory object belongs                                                    |
 | **Get-ADOUObject**        | Module to simplify returning Active Directory object details                                                                                        |
