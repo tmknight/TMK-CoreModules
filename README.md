@@ -6,11 +6,11 @@ Collection of PowerShell modules to ease system management in the enterprise.
 
 The latest version is also available from [PowerShell Gallery][GitHubPublishLink]:
 
-`Install-Module -Name TMK-CoreModules -Repository PSGallery -Force -WarningAction SilentlyContinue`
+`Install-Module -Name TMK-CoreModules -Repository PSGallery -Force`
 
-If TMK-CoreModules is already installed, obtain the latest release with:
+If TMK-CoreModules is already installed from PSGallery, obtain the latest release with:
 
-`Update-Module -Name TMK-CoreModules -Force -WarningAction SilentlyContinue`
+`Update-Module -Name TMK-CoreModules -Force`
 
 | Module                    | Description                                                                                                                                         |
 |:-------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------:|
