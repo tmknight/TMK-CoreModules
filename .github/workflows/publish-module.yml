@@ -34,4 +34,4 @@ jobs:
         shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Publish-Module -Path ./ -NuGetApiKey $env:NUGET_KEY -Forece -Verbose
+          Publish-Module -Path ./ -NuGetApiKey $env:NUGET_KEY -Force -Verbose
