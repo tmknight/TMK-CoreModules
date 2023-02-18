@@ -22,8 +22,8 @@
 
     False
 .NOTES
-	Author: Travis M Knight; tmknight; Travis.Knight@macys.com
-	Date: 2018-11-21: tmknight: Inception
+    Author: Travis M Knight; tmknight
+    Date: 2018-11-21: tmknight: Inception
 .NOTES
     Inspired by www.padisetty.com
 #>
