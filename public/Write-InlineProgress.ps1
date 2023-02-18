@@ -5,27 +5,27 @@
    Use this module to write progress of scripts.  It will write progress inline when the host is VS Code and execute Write-Progress when
    in native PowerShell
 .EXAMPLE
-    Write-InlineProgress -Activity $Activity -PercentComplete $percentcomplete
+   Write-InlineProgress -Activity $Activity -PercentComplete $percentcomplete
 
-    This is my Activity statement: 80%
+   This is my Activity statement: 80%
 .PARAMETER Activity
-	This parameter is manadatory and is in the form of a string
+   This parameter is manadatory and is in the form of a string
 
-    $Activity = "This is my Activity statement:"
+   $Activity = "This is my Activity statement:"
 .PARAMETER PercentComplete
-    This paramater is mandatory and is in the form of an integer
+   This paramater is mandatory and is in the form of an integer
 
-    $PercentComplete = 80
+   $PercentComplete = 80
 .NOTES
-	Author: Travis M Knight; tmknight
-	Date: 2017-10-25: tmknight: Inception
-	Date: 2017-11-30: tmknight: Set percent complete to two decimal places
-	Date: 2018-04-02: tmknight: Account for vscode-powershell 2.x which now supports Write-Progress
-	Date: 2019-07-08: tmknight: Account for vscode-powershell-preview which now supports Write-Progress
-	Date: 2020-10-14: tmknight: Number format to zero places.  Assessment of $PSHOME to match windows directory path format
-	Date: 2020-07-21: tmknight: Randomize temp filename and colde cleanup
+   Author: Travis M Knight; tmknight
+   Date: 2017-10-25: tmknight: Inception
+   Date: 2017-11-30: tmknight: Set percent complete to two decimal places
+   Date: 2018-04-02: tmknight: Account for vscode-powershell 2.x which now supports Write-Progress
+   Date: 2019-07-08: tmknight: Account for vscode-powershell-preview which now supports Write-Progress
+   Date: 2020-10-14: tmknight: Number format to zero places.  Assessment of $PSHOME to match windows directory path format
+   Date: 2020-07-21: tmknight: Randomize temp filename and colde cleanup
 .LINK
-    https://msdn.microsoft.com/en-us/library/system.console(v=vs.110).aspx
+   https://msdn.microsoft.com/en-us/library/system.console(v=vs.110).aspx
 #>
 
 function Write-InlineProgress {
