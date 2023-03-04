@@ -23,6 +23,9 @@
     # On Linux
     PS /home/pdadmin/Downloads> Get-NetworkInfo -AddressFamily "IPv4" -OperationalStatus "DOWN"
 
+.NOTES
+	Project: https://github.com/tmknight/TMK-CoreModules
+
 .LINK
     Based on the code from:
     https://github.com/pldmgg/misc-powershell/blob/master/MyFunctions/PowerShellCore_Compatible/Get-NetworkInfo.ps1

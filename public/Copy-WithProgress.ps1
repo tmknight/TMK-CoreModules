@@ -20,7 +20,7 @@
 
     $Message = "File Copy Progress:"
 .NOTES
-	Author: Travis M Knight; tmknight
+	Project: https://github.com/tmknight/TMK-CoreModules
 	Date: 2019-07-09: tmknight: Inception
 #>
 

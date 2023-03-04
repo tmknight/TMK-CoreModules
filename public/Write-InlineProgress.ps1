@@ -17,7 +17,7 @@
 
    $PercentComplete = 80
 .NOTES
-   Author: Travis M Knight; tmknight
+   Project: https://github.com/tmknight/TMK-CoreModules
    Date: 2017-10-25: tmknight: Inception
    Date: 2017-11-30: tmknight: Set percent complete to two decimal places
    Date: 2018-04-02: tmknight: Account for vscode-powershell 2.x which now supports Write-Progress

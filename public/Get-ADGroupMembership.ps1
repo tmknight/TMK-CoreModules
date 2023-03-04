@@ -25,7 +25,7 @@
    The default returns only direct membership.
 
 .NOTES
-   Author: Travis M Knight; tmknight
+   Project: https://github.com/tmknight/TMK-CoreModules
    Date: 2021-03-16
    v0-1: Inception
 #>

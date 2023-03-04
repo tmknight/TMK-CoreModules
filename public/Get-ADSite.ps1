@@ -75,8 +75,9 @@
     Date: 2018-11-21: tmknight: Add Test-SubnetMember to assess boundary membership
     Date: 2022-04-14: tmknight: Switch to Get-ADReplicationSite/Subnet from ActiveDirectory module
 .NOTES
+ 	Project: https://github.com/tmknight/TMK-CoreModules
     Note: Please enter only one of an AD Site Name, a portion of the subnet address a computer name or the All switch.
-    Using more than one parameter is not supported at this time.
+        Using more than one parameter is not supported at this time.
 #>
 
 function  Get-ADSite {

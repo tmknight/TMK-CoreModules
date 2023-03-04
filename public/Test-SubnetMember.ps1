@@ -22,7 +22,7 @@
 
     False
 .NOTES
-    Author: Travis M Knight; tmknight
+	Project: https://github.com/tmknight/TMK-CoreModules
     Date: 2018-11-21: tmknight: Inception
 .NOTES
     Inspired by www.padisetty.com

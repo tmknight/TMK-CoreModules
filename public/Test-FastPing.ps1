@@ -25,7 +25,7 @@
 
     $Lookup = $false
 .NOTES
-	Author: Travis M Knight
+	Project: https://github.com/tmknight/TMK-CoreModules
 	Date: 2017-04-28
     v0-1: Inception
     v0-6: Update to permit IP address

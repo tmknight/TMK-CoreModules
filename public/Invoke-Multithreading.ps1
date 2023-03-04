@@ -68,7 +68,7 @@
     A switch to disable activity progress.
     NOTE: When executing in VS-Code, the Write-InlineProgress command from TMK-CoreModules must be present
 .NOTES
-	Author: Travis M Knight; tmknight88@gmail.com
+	Project: https://github.com/tmknight/TMK-CoreModules
 	Date: 2017-03-15: tmknight: Inception
 	Date: 2017-05-03: tmknight: Update notes. Modify how runspace status is tracked.
 	Date: 2017-11-30: tmknight: Update progress to account for VS-Code host.
