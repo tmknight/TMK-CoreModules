@@ -1,19 +1,19 @@
 ## Gather all public scripts
-$OSDPublicFunctions = @( Get-ChildItem -Path $PSScriptRoot\public\*.ps1 -Recurse -ErrorAction SilentlyContinue )
+$PublicFunctions = @( Get-ChildItem -Path $PSScriptRoot\public\*.ps1 -Recurse -ErrorAction SilentlyContinue )
 
 ## Expose the functions
-foreach ($Import in $OSDPublicFunctions) {
+foreach ($Import in $PublicFunctions) {
     Try {
         . $Import.FullName
     }
     Catch {
-        Write-Error -Message "Failed to import function $($Import.FullName): $_"
+        Write-Error -Message "Failed to import function $($Import.FullName): $($_.Exception.Message)"
     }
 }
 
 ## Export individual functions
 try {
-    Export-ModuleMember -Function $OSDPublicFunctions.BaseName
+    Export-ModuleMember -Function $PublicFunctions.BaseName
 }
 catch {
     $_.Exception.Message

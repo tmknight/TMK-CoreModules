@@ -31,7 +31,7 @@
 .PARAMETER Quiet
     This paramater is an option switch that will turn off visual progress
 .NOTES
-    Author: Travis M Knight; tmknight
+	Project: https://github.com/tmknight/TMK-CoreModules
     Date: 2019-04-16: tmknight: Inception
     Date: 2022-07-20: tmknight: New logic to allow for UNC paths and avoid double-seraching the source path
     Date: 2022-08-18: tmknight: New logic to get search path into more threads to speed up search

@@ -8,9 +8,9 @@
 .PARAMETER ComputerName
     Enter the full name or IP address of a computer.
 .PARAMETER Full
-	A switch will return the full AD site info.  Used in conjuntion with ComputerName value.
+    A switch will return the full AD site info.  Used in conjuntion with ComputerName value.
 .PARAMETER Name
-	This parameter is a full or partial AD site name.
+    This parameter is a full or partial AD site name.
 .PARAMETER Subnet
     Enter the first two or three octets of an IP address.  Subnets are treated as regular expressions;
     all rules pertaining to regular expressions are in play.
@@ -37,7 +37,6 @@
     DULUTH    Duluth, GA      11.166.240.0/24, 11.166.244.0/23
 
 
-
     Description
     -----------
     Used only in conjuntion with ComputerName value.
@@ -49,7 +48,6 @@
     Site      Description     Subnet
     ----      -----------     ------
     DULUTH    Duluth, GA      11.166.240.0/24, 11.166.244.0/23
-
 
 
     Description
@@ -65,21 +63,21 @@
     TAMPA     Tampa, FL       11.48.244.0/23
 
 
-
     Description
     -----------
     The example returns all AD Sites matching the IP/subnet input.
 .NOTES
-	Author: Travis M Knight; tmknight; Travis.Knight@macys.com
-	Date: 2017-05-24: tmknight: Inception
-	Date: 2017-09-27: tmknight: Code cleanup
-	Date: 2018-05-25: tmknight: Updated help messages
-	Date: 2018-08-22: tmknight: Add switch to pull all known AD Sites and subnets
-	Date: 2018-11-21: tmknight: Add Test-SubnetMember to assess boundary membership
-	Date: 2022-04-14: tmknight: Switch to Get-ADReplicationSite/Subnet from ActiveDirectory module
+    Author: Travis M Knight; tmknight
+    Date: 2017-05-24: tmknight: Inception
+    Date: 2017-09-27: tmknight: Code cleanup
+    Date: 2018-05-25: tmknight: Updated help messages
+    Date: 2018-08-22: tmknight: Add switch to pull all known AD Sites and subnets
+    Date: 2018-11-21: tmknight: Add Test-SubnetMember to assess boundary membership
+    Date: 2022-04-14: tmknight: Switch to Get-ADReplicationSite/Subnet from ActiveDirectory module
 .NOTES
-   Note: Please enter only one of an AD Site Name, a portion of the subnet address a computer name or the All switch.
-   Using more than one parameter is not supported at this time.
+ 	Project: https://github.com/tmknight/TMK-CoreModules
+    Note: Please enter only one of an AD Site Name, a portion of the subnet address a computer name or the All switch.
+        Using more than one parameter is not supported at this time.
 #>
 
 function  Get-ADSite {

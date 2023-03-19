@@ -6,28 +6,28 @@
    Use this module to perform a lookup of all global groups to which an object belongs, both direct and recursive.
    This requires the AtiveDirectory module
 .EXAMPLE
-	Get-ADGroupMembership -Identity someName -Recursive
+   Get-ADGroupMembership -Identity someName -Recursive
 
 .PARAMETER Identity
-	This parameter is required and must be in the form of valid SAMAccountName.
-    If you wish to search a computer account, use must use the SAMAccountName with the trailing '$'
+   This parameter is required and must be in the form of valid SAMAccountName.
+   If you wish to search a computer account, use must use the SAMAccountName with the trailing '$'
 
-    $Identity = 'someName'
+   $Identity = 'someName'
 
 .PARAMETER PageSize
-	This parameter is optional and sets the size of the search set and must be in the form of valid integer.
-    The defualt is 1000.
+   This parameter is optional and sets the size of the search set and must be in the form of valid integer.
+   The defualt is 1000.
 
-    $PageSize = 1000
+   $PageSize = 1000
 
 .PARAMETER Recursive
-	This parameter is optional.  It is a switch that will perform a recursive search of all global groups.
-    The default returns only direct membership.
+   This parameter is optional.  It is a switch that will perform a recursive search of all global groups.
+   The default returns only direct membership.
 
 .NOTES
-	Author: Travis M Knight
-	Date: 2021-03016
-    v0-1: Inception
+   Project: https://github.com/tmknight/TMK-CoreModules
+   Date: 2021-03-16
+   v0-1: Inception
 #>
 
 Function Get-ADGroupMembership {

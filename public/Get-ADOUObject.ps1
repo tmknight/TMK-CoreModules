@@ -33,7 +33,7 @@
 
     $OperatingSystem = "Windows 10*"
 .NOTES
-	Author: Travis M Knight; tmknight
+	Project: https://github.com/tmknight/TMK-CoreModules
 	Date: 2017-05-22: tmknight: Inception
 	Date: 2017-06-06: tmknight: Added OS version to computer query;
         added mail and display name to user query;
