@@ -59,7 +59,8 @@ function Find-File {
             ValueFromPipeline = $false,
             Position = 3)]
         [Alias("NoProgress")]
-        [switch]$Quiet
+        [switch]$Quiet,
+        [switch]$Force
     )
 
     Begin {
@@ -71,7 +72,7 @@ function Find-File {
 
             if ($dirs -match "\w{1,}") {
                 $level = "root"
-                if ($dirs -match "$regEx\\Windows\b") {
+                if ($dirs -match "$regEx\\Windows\b" -and -not $Force.IsPresent) {
                     $title = 'A "Windows" directory is in your search; this may take a very long time to complete.'
                     $prompt = ''
                     $abort = New-Object System.Management.Automation.Host.ChoiceDescription '&Abort', 'Aborts the operation'
