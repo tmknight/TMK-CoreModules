@@ -30,6 +30,8 @@
     $MaxThreads = 100
 .PARAMETER Quiet
     This paramater is an option switch that will turn off visual progress
+.PARAMETER Force
+    This paramater overrides the prompt about Windows directories in the search path
 .NOTES
 	Project: https://github.com/tmknight/TMK-CoreModules
     Date: 2019-04-16: tmknight: Inception
