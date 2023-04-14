@@ -67,17 +67,7 @@
     -----------
     The example returns all AD Sites matching the IP/subnet input.
 .NOTES
-    Author: Travis M Knight; tmknight
-    Date: 2017-05-24: tmknight: Inception
-    Date: 2017-09-27: tmknight: Code cleanup
-    Date: 2018-05-25: tmknight: Updated help messages
-    Date: 2018-08-22: tmknight: Add switch to pull all known AD Sites and subnets
-    Date: 2018-11-21: tmknight: Add Test-SubnetMember to assess boundary membership
-    Date: 2022-04-14: tmknight: Switch to Get-ADReplicationSite/Subnet from ActiveDirectory module
-.NOTES
  	Project: https://github.com/tmknight/TMK-CoreModules
-    Note: Please enter only one of an AD Site Name, a portion of the subnet address a computer name or the All switch.
-        Using more than one parameter is not supported at this time.
 #>
 
 function  Get-ADSite {

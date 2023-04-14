@@ -69,16 +69,6 @@
     NOTE: When executing in VS-Code, the Write-InlineProgress command from TMK-CoreModules must be present
 .NOTES
 	Project: https://github.com/tmknight/TMK-CoreModules
-	Date: 2017-03-15: tmknight: Inception
-	Date: 2017-05-03: tmknight: Update notes. Modify how runspace status is tracked.
-	Date: 2017-11-30: tmknight: Update progress to account for VS-Code host.
-	Date: 2018-02-07: tmknight: Added switch to not show progress if desired for silent execution;Parameter verbiage change from LoopObjects to InputObject.
-	Date: 2018-02-14: tmknight: Add logic to force progress to 100% when all operations complete.
-	Date: 2018-08-09: tmknight: Clarify "Arguments" parameter.
-	Date: 2018-10-19: tmknight: Rename "InputObject" parameter to be in alignment with other PS modules.
-	Date: 2018-12-18: tmknight: Rename "Arguments" to "ArgumentList" to be in alignment with other PS modules.
-	Date: 2021-12-08: tmknight: Rename "MaxThreads" to "ThrottleLimit" to be in alignment with other PS modules.
-	Date: 2022-08-18: tmknight: Rename "NoProgress" to "Quiet" to be in alignment with other PS modules.
 .LINK
     https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/26/beginning-use-of-powershell-runspaces-part-1/
     https://github.com/tmknight/TMK-CoreModules
