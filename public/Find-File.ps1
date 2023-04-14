@@ -30,11 +30,10 @@
     $MaxThreads = 100
 .PARAMETER Quiet
     This paramater is an option switch that will turn off visual progress
+.PARAMETER Force
+    This paramater overrides the prompt about Windows directories in the search path
 .NOTES
 	Project: https://github.com/tmknight/TMK-CoreModules
-    Date: 2019-04-16: tmknight: Inception
-    Date: 2022-07-20: tmknight: New logic to allow for UNC paths and avoid double-seraching the source path
-    Date: 2022-08-18: tmknight: New logic to get search path into more threads to speed up search
 #>
 
 function Find-File {
@@ -59,7 +58,8 @@ function Find-File {
             ValueFromPipeline = $false,
             Position = 3)]
         [Alias("NoProgress")]
-        [switch]$Quiet
+        [switch]$Quiet,
+        [switch]$Force
     )
 
     Begin {
@@ -71,7 +71,7 @@ function Find-File {
 
             if ($dirs -match "\w{1,}") {
                 $level = "root"
-                if ($dirs -match "$regEx\\Windows\b") {
+                if ($dirs -match "$regEx\\Windows\b" -and -not $Force.IsPresent) {
                     $title = 'A "Windows" directory is in your search; this may take a very long time to complete.'
                     $prompt = ''
                     $abort = New-Object System.Management.Automation.Host.ChoiceDescription '&Abort', 'Aborts the operation'

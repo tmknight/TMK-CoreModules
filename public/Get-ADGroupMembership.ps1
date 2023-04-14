@@ -26,8 +26,6 @@
 
 .NOTES
    Project: https://github.com/tmknight/TMK-CoreModules
-   Date: 2021-03-16
-   v0-1: Inception
 #>
 
 Function Get-ADGroupMembership {

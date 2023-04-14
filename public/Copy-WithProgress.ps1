@@ -21,7 +21,6 @@
     $Message = "File Copy Progress:"
 .NOTES
 	Project: https://github.com/tmknight/TMK-CoreModules
-	Date: 2019-07-09: tmknight: Inception
 #>
 
 function Copy-WithProgress {

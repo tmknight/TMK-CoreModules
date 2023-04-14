@@ -34,19 +34,6 @@
     $OperatingSystem = "Windows 10*"
 .NOTES
 	Project: https://github.com/tmknight/TMK-CoreModules
-	Date: 2017-05-22: tmknight: Inception
-	Date: 2017-06-06: tmknight: Added OS version to computer query;
-        added mail and display name to user query;
-        added validate set to scope and Category;
-        set defaults for InputObject and OperatingSystem;
-        prompt to continue if Category user, InputObject = "*" and Base = subtree
-    Date: 2017-06-12: tmknight: Check for ActiveDirectory module
-    Date: 2017-11-30: tmknight: Clean-up code
-    Date: 2018-07-03: tmknight: Add description parameter
-    Date: 2019-04-24: tmknight: Change name to reflect singular standard;
-        Changed Objects to InputObject;
-        Moved large data set warning further up
-    Date: 2023-01-22: tmknight: Updated example; rename to Get-ADOUObject
 #>
 
 function Get-ADOUObject {

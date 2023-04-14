@@ -23,9 +23,8 @@
     False
 .NOTES
 	Project: https://github.com/tmknight/TMK-CoreModules
-    Date: 2018-11-21: tmknight: Inception
-.NOTES
-    Inspired by www.padisetty.com
+.LINK
+    Inspired by https://www.padisetty.com
 #>
 function Test-SubnetMember {
     param(
