@@ -43,7 +43,7 @@ function Find-File {
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Please ensure a fully qualified path that must terminate with `"\`".",
             Position = 0)]
-        [ValidatePattern("([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)\\\w*")]
+        [ValidatePattern("\/\w{0,}|([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)\\\w*")]
         [string]$Path,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
@@ -67,7 +67,7 @@ function Find-File {
         $regEx = "([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)"
         try {
             Write-Verbose -Message "Getting root path directories"
-            $dirs = (Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue).FullName
+            $dirs = (Get-ChildItem -Path $Path -Directory -Force -ErrorAction SilentlyContinue).FullName
 
             if ($dirs -match "\w{1,}") {
                 $level = "root"
@@ -85,10 +85,10 @@ function Find-File {
 
                 if ($dirs.Count -le 50) {
                     Write-Verbose -Message "Getting second level directories"
-                    $dirsExt0 = ($dirs | Get-ChildItem -Directory -ErrorAction SilentlyContinue).FullName
+                    $dirsExt0 = ($dirs | Get-ChildItem -Directory -Force -ErrorAction SilentlyContinue).FullName
                     if ($dirsExt0 -match "\w{1,}") {
                         Write-Verbose -Message "Getting third level directories"
-                        $dirsExt1 = ($dirsExt0 | Get-ChildItem -Directory -ErrorAction SilentlyContinue).FullName
+                        $dirsExt1 = ($dirsExt0 | Get-ChildItem -Directory -Force -ErrorAction SilentlyContinue).FullName
                     }
 
                     Write-Verbose -Message "Determining valid search paths"
