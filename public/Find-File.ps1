@@ -24,6 +24,14 @@
     or
 
     $file = "nmap-update"
+.PARAMETER Exclude
+    This paramater is not mandatory and is in the form of whole or partial name
+
+    $Exclude = "*proc*"
+
+    or
+
+    $Exclude = "/proc"
 .PARAMETER MaxThreads
     This parameter is an optional integer
 
@@ -52,11 +60,16 @@ function Find-File {
         [string]$File,
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $false,
+            ValueFromPipelineByPropertyName = $true,
             Position = 2)]
-        [int]$MaxThreads = 100,
+        [string]$Exclude,
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $false,
             Position = 3)]
+        [int]$MaxThreads = 100,
+        [Parameter(Mandatory = $false,
+            ValueFromPipeline = $false,
+            Position = 4)]
         [Alias("NoProgress")]
         [switch]$Quiet,
         [switch]$Force
@@ -67,7 +80,7 @@ function Find-File {
         $regEx = "([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)"
         try {
             Write-Verbose -Message "Getting root path directories"
-            $dirs = (Get-ChildItem -Path $Path -Directory -Force -ErrorAction SilentlyContinue).FullName
+            $dirs = (Get-ChildItem -Path $Path -Exclude "$Exclude" -Directory -Force -ErrorAction SilentlyContinue).FullName
 
             if ($dirs -match "\w{1,}") {
                 $level = "root"
@@ -150,7 +163,7 @@ function Find-File {
 
         ## Search root of $Path and extended root directories
         Write-Verbose -Message "Searching root path"
-        $in = (Get-ChildItem -Path $Path -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
+        $in = (Get-ChildItem -Path $Path -Exclude "$Exclude" -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
         if ($null -eq $out -and $null -ne $in) {
             $in | ForEach-Object {
                 $out += [PSCustomObject]@{
@@ -179,7 +192,7 @@ function Find-File {
 
         if ($dirs -match "\w{1,}") {
             Write-Verbose -Message "Searching root path directories"
-            $in1 = (Get-ChildItem -Path $dirs -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
+            $in1 = (Get-ChildItem -Path $dirs -Exclude "$Exclude" -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
             if ($null -eq $out -and $null -ne $in1) {
                 $in1 | ForEach-Object {
                     $out += [PSCustomObject]@{
