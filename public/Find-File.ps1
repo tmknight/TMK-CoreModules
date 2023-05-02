@@ -159,7 +159,7 @@ function Find-File {
     }
     Process {
         Write-Verbose -Message "Searching $level level directories"
-        $out = Start-Multithreading -InputObject $dirsExt1 -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -Quiet:$Quiet | Sort-Object -Property File -Unique
+        $out = @(Start-Multithreading -InputObject $dirsExt1 -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -Quiet:$Quiet | Sort-Object -Property File -Unique)
 
         ## Search root of $Path and extended root directories
         Write-Verbose -Message "Searching root path"
