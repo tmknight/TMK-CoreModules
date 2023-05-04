@@ -76,6 +76,7 @@ function Find-File {
     )
 
     Begin {
+        $Path = ($Path).TrimEnd('\*') + '\*'
         $regExPath = ($Path -replace "\\", "\\" -replace "\$", "\$").TrimEnd('\')
         $regEx = "([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)"
         try {
