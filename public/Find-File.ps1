@@ -76,6 +76,7 @@ function Find-File {
     )
 
     Begin {
+        $Path = ($Path).TrimEnd('\*') + '\*'
         $regExPath = ($Path -replace "\\", "\\" -replace "\$", "\$").TrimEnd('\')
         $regEx = "([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)"
         try {
@@ -159,7 +160,7 @@ function Find-File {
     }
     Process {
         Write-Verbose -Message "Searching $level level directories"
-        $out = @(Start-Multithreading -InputObject $dirsExt1 -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -Quiet:$Quiet | Sort-Object -Property File -Unique)
+        [array]$out = Start-Multithreading -InputObject $dirsExt1 -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -Quiet:$Quiet | Sort-Object -Property File -Unique
 
         ## Search root of $Path and extended root directories
         Write-Verbose -Message "Searching root path"
