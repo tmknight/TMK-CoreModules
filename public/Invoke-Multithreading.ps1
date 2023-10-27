@@ -155,7 +155,7 @@ function Invoke-Multithreading {
                     ## Get progress
                     [int]$perc = ($c / $count * 100)
                     ## Prevent 100 while still processing
-                    if ($perc -eq 100) { $perc = 99 }
+                    if ($perc -eq 100 -and $c -ne $count) { $perc = 99 }
                     Write-InlineProgress -Activity "$c of $count threads completed" `
                         -PercentComplete $perc
                 }
