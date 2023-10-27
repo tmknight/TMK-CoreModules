@@ -27,6 +27,7 @@
     Inspired by https://www.padisetty.com
 #>
 function Test-SubnetMember {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
