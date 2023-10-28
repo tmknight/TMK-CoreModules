@@ -23,12 +23,13 @@
    Date: 2018-04-02: tmknight: Account for vscode-powershell 2.x which now supports Write-Progress
    Date: 2019-07-08: tmknight: Account for vscode-powershell-preview which now supports Write-Progress
    Date: 2020-10-14: tmknight: Number format to zero places.  Assessment of $PSHOME to match windows directory path format
-   Date: 2020-07-21: tmknight: Randomize temp filename and colde cleanup
+   Date: 2020-07-21: tmknight: Randomize temp filename and code cleanup
 .LINK
    https://msdn.microsoft.com/en-us/library/system.console(v=vs.110).aspx
 #>
 
 function Write-InlineProgress {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,

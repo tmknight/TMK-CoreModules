@@ -37,6 +37,7 @@
 #>
 
 function Get-ADOUObject {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $true,

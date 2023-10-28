@@ -45,6 +45,7 @@
 #>
 
 function Find-File {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,

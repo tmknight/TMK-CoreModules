@@ -75,6 +75,7 @@
 #>
 
 function Invoke-Multithreading {
+    [CmdletBinding()]
     param(
         # The object(s) on which to execute the ScriptBlock
         [Parameter(Mandatory = $true,
@@ -151,7 +152,10 @@ function Invoke-Multithreading {
         While ($RunspaceCollection.Count -gt 0) {
             Foreach ($Runspace in $RunspaceCollection.ToArray()) {
                 if ($Quiet.IsPresent -eq $false) {
-                    $perc = ($c / $count * 100)
+                    ## Get progress
+                    [int]$perc = ($c / $count * 100)
+                    ## Prevent 100 while still processing
+                    if ($perc -eq 100 -and $c -ne $count) { $perc = 99 }
                     Write-InlineProgress -Activity "$c of $count threads completed" `
                         -PercentComplete $perc
                 }
