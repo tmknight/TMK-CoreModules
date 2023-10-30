@@ -53,9 +53,9 @@ Function Get-ADGroupMembership {
         $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
         $objSearcher.SearchRoot = $objDomain
         $objSearcher.PageSize = $PageSize
-        $objSearcher.SearchScope = "Subtree"
+        $objSearcher.SearchScope = 'Subtree'
         $objSearcher.Filter = $strDN
-        $colProplistUsr = "name"
+        $colProplistUsr = 'name'
     }
     Process {
         try {
@@ -82,7 +82,7 @@ Function Get-ADGroupMembership {
             }
 
             $objSearcher.Filter = $strGroup
-            $colProplistGrp = "name"
+            $colProplistGrp = 'name'
             ForEach ($g in $colProplistGrp) {
                 $objSearcher.PropertiesToLoad.Add($g) | Out-Null
             }
@@ -90,24 +90,24 @@ Function Get-ADGroupMembership {
             $obj = @()
             $colResultsGrp = $objSearcher.FindAll()
             ForEach ($objResultGrp in $colResultsGrp) {
-                $vars = "objItemGrp", "grpDN", "name", "sid"
+                $vars = 'objItemGrp', 'grpDN', 'name', 'sid'
                 Remove-Variable $vars -ErrorAction SilentlyContinue
 
                 $objItemGrp = $objResultGrp.Properties
-                $grpDN = $objItemGrp.adspath -replace "LDAP://"
+                $grpDN = $objItemGrp.adspath -replace 'LDAP://'
                 $name = $($objItemGrp.name)
-                if ($grpDN -match "OU=Mail") {
-                    $sid = "Mail Group"
+                if ($grpDN -match 'OU=Mail') {
+                    $sid = 'Mail Group'
                 }
                 else {
                     try {
                         $sid = (Get-ADGroup "$name" -ErrorAction SilentlyContinue).SID
-                        if ($sid -notmatch "S-1-5") {
-                            $sid = "unknown"
+                        if ($sid -notmatch 'S-1-5') {
+                            $sid = 'unknown'
                         }
                     }
                     catch {
-                        $sid = "unknown"
+                        $sid = 'unknown'
                     }
                 }
                 $obj += [PSCustomObject] @{

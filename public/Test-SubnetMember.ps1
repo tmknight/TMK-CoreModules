@@ -43,7 +43,7 @@ function Test-SubnetMember {
 
     Begin {
         # Replace any non-digit characters to ensure only dotted IP address
-        $Subnet = ($Subnet -split "\D") -join "." -replace "(\\{1,}\.){2,}", "."
+        $Subnet = ($Subnet -split '\D') -join '.' -replace '(\\{1,}\.){2,}', '.'
 
         # Separate the network address and length
         $network1, [int]$subnetlen1 = $Subnet.Split('/')
@@ -90,46 +90,46 @@ function Test-SubnetMember {
 }
 
 function CheckNetworkToSubnet ([uint32]$un2, [uint32]$ma2, [uint32]$un1) {
-    $ReturnArray = "" | Select-Object -Property Condition, Direction
+    $ReturnArray = '' | Select-Object -Property Condition, Direction
 
     if ($un2 -eq ($ma2 -band $un1)) {
         $ReturnArray.Condition = $True
-        $ReturnArray.Direction = "Addr1ToAddr2"
+        $ReturnArray.Direction = 'Addr1ToAddr2'
         return $ReturnArray.Condition
     }
     else {
         $ReturnArray.Condition = $False
-        $ReturnArray.Direction = "Addr1ToAddr2"
+        $ReturnArray.Direction = 'Addr1ToAddr2'
         return $ReturnArray.Condition
     }
 }
 
 function CheckSubnetToNetwork ([uint32]$un1, [uint32]$ma1, [uint32]$un2) {
-    $ReturnArray = "" | Select-Object -Property Condition, Direction
+    $ReturnArray = '' | Select-Object -Property Condition, Direction
 
     if ($un1 -eq ($ma1 -band $un2)) {
         $ReturnArray.Condition = $True
-        $ReturnArray.Direction = "Addr2ToAddr1"
+        $ReturnArray.Direction = 'Addr2ToAddr1'
         return $ReturnArray.Condition
     }
     else {
         $ReturnArray.Condition = $False
-        $ReturnArray.Direction = "Addr2ToAddr1"
+        $ReturnArray.Direction = 'Addr2ToAddr1'
         return $ReturnArray.Condition
     }
 }
 
 function CheckNetworkToNetwork ([uint32]$un1, [uint32]$un2) {
-    $ReturnArray = "" | Select-Object -Property Condition, Direction
+    $ReturnArray = '' | Select-Object -Property Condition, Direction
 
     if ($un1 -eq $un2) {
         $ReturnArray.Condition = $True
-        $ReturnArray.Direction = "Addr1ToAddr2"
+        $ReturnArray.Direction = 'Addr1ToAddr2'
         return $ReturnArray.Condition
     }
     else {
         $ReturnArray.Condition = $False
-        $ReturnArray.Direction = "Addr1ToAddr2"
+        $ReturnArray.Direction = 'Addr1ToAddr2'
         return $ReturnArray.Condition
     }
 }

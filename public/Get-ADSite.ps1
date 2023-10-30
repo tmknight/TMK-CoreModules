@@ -71,60 +71,60 @@
 #>
 
 function  Get-ADSite {
-    [CmdletBinding(DefaultParametersetName = "p0")]
+    [CmdletBinding(DefaultParametersetName = 'p0')]
     param(
-        [Parameter(ParameterSetName = "p0",
+        [Parameter(ParameterSetName = 'p0',
             Mandatory = $true,
             ValueFromPipeline = $true,
-            HelpMessage = "Enter the full name or IP address of a computer",
+            HelpMessage = 'Enter the full name or IP address of a computer',
             Position = 0)]
         [string] $ComputerName,
-        [Parameter(ParameterSetName = "p0",
+        [Parameter(ParameterSetName = 'p0',
             Mandatory = $false,
             Position = 2)]
         [switch] $Full,
-        [Parameter(ParameterSetName = "p1",
+        [Parameter(ParameterSetName = 'p1',
             Mandatory = $false)]
         [string] $Name,
-        [Parameter(ParameterSetName = "p2",
+        [Parameter(ParameterSetName = 'p2',
             Mandatory = $false)]
         [string] $Subnet,
-        [Parameter(ParameterSetName = "p3",
-            HelpMessage = "A switch that will simply get ALL known sites and subnets. No other parameter will be assessed",
+        [Parameter(ParameterSetName = 'p3',
+            HelpMessage = 'A switch that will simply get ALL known sites and subnets. No other parameter will be assessed',
             Mandatory = $false)]
         [switch] $All
     )
 
     begin {
-        $ErrorActionPreference = "Stop"
+        $ErrorActionPreference = 'Stop'
 
         if ($All) {
             ## A switch that will simply get ALL known sites and subnets. No other parameter will be assessed
         }
         elseif (($Name -and $Subnet -and $ComputerName) -or ($Name -and ($Subnet -or $ComputerName)) -or ($Subnet -and $ComputerName)) {
-            Write-Error -Message "Please enter only one of an AD Site Name, a portion of the subnet address or a computer name. Using more than one parameter is not supported at this time." -Category InvalidArgument
+            Write-Error -Message 'Please enter only one of an AD Site Name, a portion of the subnet address or a computer name. Using more than one parameter is not supported at this time.' -Category InvalidArgument
             break
         }
-        elseif ($Subnet -match "[a-zA-Z]") {
-            Write-Error -Message "Please enter a full or partial subnet address in the form of dotted decimal-numbers" -Category InvalidArgument
+        elseif ($Subnet -match '[a-zA-Z]') {
+            Write-Error -Message 'Please enter a full or partial subnet address in the form of dotted decimal-numbers' -Category InvalidArgument
             break
         }
-        elseif ($Name -match "^\d{1,3}.*\d{1,3}?") {
-            Write-Error -Message "Please enter a valid AD Site Name" -Category InvalidArgument
+        elseif ($Name -match '^\d{1,3}.*\d{1,3}?') {
+            Write-Error -Message 'Please enter a valid AD Site Name' -Category InvalidArgument
             break
         }
         elseif (!($Name -or $Subnet -or $ComputerName)) {
-            Write-Error -Message "Please enter one of an AD Site Name, a portion of the subnet address or a computer name" -Category InvalidArgument
+            Write-Error -Message 'Please enter one of an AD Site Name, a portion of the subnet address or a computer name' -Category InvalidArgument
             break
         }
     }
     process {
         ## get AD site of a specific computer
         switch ($PsCmdlet.ParameterSetName) {
-            "p0" {
+            'p0' {
                 try {
                     if ($ComputerName -eq $env:COMPUTERNAME) {
-                        $cn = "."
+                        $cn = '.'
                     }
                     else {
                         $cn = $ComputerName
@@ -148,20 +148,20 @@ function  Get-ADSite {
                     $result = [PSCustomObject]@{
                         Site        = $site.Name
                         Description = $site.Description
-                        Subnet      = $subs.Name -join "; "
+                        Subnet      = $subs.Name -join '; '
                     }
                 }
             }
-            "p1" {
+            'p1' {
                 $site = Get-ADReplicationSite -Identity $Name
                 $subs = Get-ADReplicationSubnet -Filter "Site -eq '$($site.DistinguishedName)'"
                 $result = [PSCustomObject]@{
                     Site        = $site.Name
                     Description = $site.Description
-                    Subnet      = $subs.Name -join "; "
+                    Subnet      = $subs.Name -join '; '
                 }
             }
-            "p2" {
+            'p2' {
                 $result = @()
                 $subs = Get-ADReplicationSubnet -Filter "Name -like '$Subnet*'"
                 foreach ($item in $subs) {
@@ -169,12 +169,12 @@ function  Get-ADSite {
                     $result += [PSCustomObject]@{
                         Site        = $site.Name
                         Description = $site.Description
-                        Subnet      = $item.Name -join "; "
+                        Subnet      = $item.Name -join '; '
                     }
                 }
 
             }
-            "p3" {
+            'p3' {
                 $result = @()
                 $site = Get-ADReplicationSite -Filter *
                 foreach ($item in $site) {
@@ -182,7 +182,7 @@ function  Get-ADSite {
                     $result += [PSCustomObject]@{
                         Site        = $item.Name
                         Description = $item.Description
-                        Subnet      = $subs.Name -join "; "
+                        Subnet      = $subs.Name -join '; '
                     }
                 }
             }
