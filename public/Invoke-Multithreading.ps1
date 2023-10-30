@@ -121,7 +121,7 @@ function Invoke-Multithreading {
         $ErrorActionPreference = 'SilentlyContinue'
         switch ($Host.Name) {
             "Visual Studio Code Host" {
-                if (!(Get-Command -Name Write-InlineProgress) -and $Quiet -eq $false) {
+                if (-not(Get-Command -Name Write-InlineProgress) -and -not($Quiet.IsPresent)) {
                     $Quiet = $true
                     $message = "The command Write-InlineProgress is required when executing via VS-Code and does not exist.`n" +
                     "Please import `"TMK-CoreModules`" from https://github.com/tmknight/TMK-CoreModules. Continuing without progress."
@@ -151,7 +151,7 @@ function Invoke-Multithreading {
         ## Keep track of open threads and terminate when all have completed
         While ($RunspaceCollection.Count -gt 0) {
             Foreach ($Runspace in $RunspaceCollection.ToArray()) {
-                if ($Quiet.IsPresent -eq $false) {
+                if (-not($Quiet.IsPresent)) {
                     ## Get progress
                     [int]$perc = ($c / $count * 100)
                     ## Prevent 100 while still processing
@@ -160,7 +160,7 @@ function Invoke-Multithreading {
                         -PercentComplete $perc
                 }
 
-                if ($Runspace.Result.IsCompleted -eq $true) {
+                if ($Runspace.Result.IsCompleted) {
                     $result += $Runspace.PowerShell.EndInvoke($Runspace.Result)
                     $Runspace.PowerShell.Dispose()
                     $c++
@@ -169,7 +169,7 @@ function Invoke-Multithreading {
             }
         }
 
-        if ($Quiet.IsPresent -eq $false) {
+        if (-not($Quiet.IsPresent)) {
             ## Force progress to 100
             $c = $count
             $perc = 100
