@@ -81,7 +81,7 @@ function Invoke-Multithreading {
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
             Position = 0)]
-        [Alias("InputObjects")]
+        [Alias('InputObjects')]
         $InputObject,
 
         # Command or script to run. Must take ComputerName as argument to make sense.
@@ -92,19 +92,19 @@ function Invoke-Multithreading {
         # List of arguments required by the scriptblock
         [Parameter(Mandatory = $false,
             Position = 2)]
-        [Alias("Arguments")]
+        [Alias('Arguments')]
         $ArgumentList = @{arg = '0' },
 
         # Maximum concurrent threads to start
         [Parameter(Mandatory = $false,
             Position = 3)]
-        [Alias("MaxThreads")]
+        [Alias('MaxThreads')]
         [int]$ThrottleLimit = 20,
 
         # Whether progress is displayed
         [Parameter(Mandatory = $false,
             Position = 4)]
-        [Alias("NoProgress")]
+        [Alias('NoProgress')]
         [switch]$Quiet
     )
 
@@ -116,11 +116,14 @@ function Invoke-Multithreading {
 
         ## Counter variable to assess progress
         $c = 0
+
+        ## Initialize results
+        $result = @()
     }
     Process {
         $ErrorActionPreference = 'SilentlyContinue'
         switch ($Host.Name) {
-            "Visual Studio Code Host" {
+            'Visual Studio Code Host' {
                 if (-not(Get-Command -Name Write-InlineProgress) -and -not($Quiet.IsPresent)) {
                     $Quiet = $true
                     $message = "The command Write-InlineProgress is required when executing via VS-Code and does not exist.`n" +
@@ -141,8 +144,7 @@ function Invoke-Multithreading {
 
             # Create Runspace collection
             [Collections.Arraylist]$RunspaceCollection += [PSCustomObject] @{
-                Result     = $PowerShell.BeginInvoke()
-                PowerShell = $PowerShell
+                Result = $PowerShell.BeginInvoke()
             }
         }
 
@@ -156,8 +158,7 @@ function Invoke-Multithreading {
                     [int]$perc = ($c / $count * 100)
                     ## Prevent 100 while still processing
                     if ($perc -eq 100 -and $c -ne $count) { $perc = 99 }
-                    Write-InlineProgress -Activity "$c of $count threads completed" `
-                        -PercentComplete $perc
+                    Write-InlineProgress -Activity "$c of $count threads completed" -PercentComplete $perc
                 }
 
                 if ($Runspace.Result.IsCompleted) {
@@ -165,7 +166,7 @@ function Invoke-Multithreading {
                     $Runspace.PowerShell.Dispose()
                     $RunspaceCollection.Remove($Runspace)
                     $c++
-	    	}
+                }
             }
         }
 
@@ -173,8 +174,7 @@ function Invoke-Multithreading {
             ## Force progress to 100
             $c = $count
             $perc = 100
-            Write-InlineProgress -Activity "$c of $count threads completed" `
-                -PercentComplete $perc
+            Write-InlineProgress -Activity "$c of $count threads completed" -PercentComplete $perc
             [System.Console]::WriteLine()
         }
     }
