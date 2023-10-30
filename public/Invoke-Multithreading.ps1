@@ -163,9 +163,9 @@ function Invoke-Multithreading {
                 if ($Runspace.Result.IsCompleted) {
                     $result += $Runspace.PowerShell.EndInvoke($Runspace.Result)
                     $Runspace.PowerShell.Dispose()
-                    $c++
                     $RunspaceCollection.Remove($Runspace)
-                }
+                    $c++
+	    	}
             }
         }
 
