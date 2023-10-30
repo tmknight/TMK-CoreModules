@@ -45,14 +45,14 @@ function Write-InlineProgress {
 
     begin {
         ## Set percent value to two decimal places
-        $perc = "{0:N0}" -f $PercentComplete
+        $perc = '{0:N0}' -f $PercentComplete
 
         ## If necessary, capture current console colors to reinstate them after progress completes
         $curBackgroundColor = [System.Console]::BackgroundColor
         $curForegroundColor = [System.Console]::ForegroundColor
         $random = (1..8 | ForEach-Object { '{0:X}' -f (Get-Random -Max 16) }) -join ''
         $tmpFile = "ConsoleColor_$random.csv"
-        if ($PSVersionTable.OS -match "Windows") {
+        if ($PSVersionTable.OS -match 'Windows') {
             $tmpColors = "$env:TEMP\$tmpFile"
         }
         else {
@@ -60,12 +60,12 @@ function Write-InlineProgress {
         }
     }
     process {
-        $ErrorActionPreference = "Stop"
+        $ErrorActionPreference = 'Stop'
         try {
             switch ($host.Name) {
-                "Visual Studio Code Host" {
+                'Visual Studio Code Host' {
                     ## Code PS Host Preview supports Write-Progress
-                    if ($psEditor.EditorServicesVersion -ge "2.0.0.0") {
+                    if ($psEditor.EditorServicesVersion -ge '2.0.0.0') {
                         Write-Progress -Activity $Activity -PercentComplete $perc -Status "$perc%"
                     }
                     else {
@@ -94,15 +94,15 @@ function Write-InlineProgress {
     }
     end {
         switch ($host.Name) {
-            "Visual Studio Code Host" {
+            'Visual Studio Code Host' {
                 ## Clear progress line in keeping with Write-Progress and reinstate console colors
-                if ($psEditor.EditorServicesVersion -lt "2.0.0.0") {
+                if ($psEditor.EditorServicesVersion -lt '2.0.0.0') {
                     $colors = Import-Csv -Path $tmpColors
                     $CursorY = $host.UI.RawUI.CursorPosition.Y
                     [System.Console]::BackgroundColor = [System.ConsoleColor]::($colors.BackgroundColor).ToString()
                     [System.Console]::ForegroundColor = [System.ConsoleColor]::($colors.ForegroundColor).ToString()
                     [System.Console]::SetCursorPosition(0, $CursorY)
-                    [System.Console]::Write("")
+                    [System.Console]::Write('')
 
                     ## Remove temp color file
                     Remove-Item -Path $tmpColors -Force -Confirm:$false -ErrorAction SilentlyContinue

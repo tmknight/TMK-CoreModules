@@ -52,7 +52,7 @@ function Find-File {
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Please ensure a fully qualified path that must terminate with `"\`".",
             Position = 0)]
-        [ValidatePattern("\/\w{0,}|([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)\\\w*")]
+        [ValidatePattern('\/\w{0,}|([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)\\\w*')]
         [string]$Path,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
@@ -71,21 +71,21 @@ function Find-File {
         [Parameter(Mandatory = $false,
             ValueFromPipeline = $false,
             Position = 4)]
-        [Alias("NoProgress")]
+        [Alias('NoProgress')]
         [switch]$Quiet,
         [switch]$Force
     )
 
     Begin {
         $Path = ($Path).TrimEnd('\*') + '\*'
-        $regExPath = ($Path -replace "\\", "\\" -replace "\$", "\$").TrimEnd('\')
-        $regEx = "([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)"
+        $regExPath = ($Path -replace '\\', '\\' -replace '\$', '\$').TrimEnd('\')
+        $regEx = '([a-zA-Z]\:|\\\\\w{1,}(\.{1}\w{1,}){0,}\\[a-zA-Z]{1,}\$)'
         try {
-            Write-Verbose -Message "Getting root path directories"
+            Write-Verbose -Message 'Getting root path directories'
             $dirs = (Get-ChildItem -Path $Path -Exclude "$Exclude" -Directory -Force -ErrorAction SilentlyContinue).FullName
 
-            if ($dirs -match "\w{1,}") {
-                $level = "root"
+            if ($dirs -match '\w{1,}') {
+                $level = 'root'
                 if ($dirs -match "$regEx\\Windows\b" -and -not $Force.IsPresent) {
                     $title = 'A "Windows" directory is in your search; this may take a very long time to complete.'
                     $prompt = ''
@@ -99,25 +99,25 @@ function Find-File {
                 }
 
                 if ($dirs.Count -le 50) {
-                    Write-Verbose -Message "Getting second level directories"
+                    Write-Verbose -Message 'Getting second level directories'
                     $dirsExt0 = ($dirs | Get-ChildItem -Directory -Force -ErrorAction SilentlyContinue).FullName
-                    if ($dirsExt0 -match "\w{1,}") {
-                        Write-Verbose -Message "Getting third level directories"
+                    if ($dirsExt0 -match '\w{1,}') {
+                        Write-Verbose -Message 'Getting third level directories'
                         $dirsExt1 = ($dirsExt0 | Get-ChildItem -Directory -Force -ErrorAction SilentlyContinue).FullName
                     }
 
-                    Write-Verbose -Message "Determining valid search paths"
-                    $dirs = $dirs -replace "$regExPath$" | Where-Object { $_.trim() -ne "" }
-                    if ($dirsExt0 -match "\w{1,}") {
-                        $level = "second"
-                        $dirsExt0 = $dirsExt0 -replace "$regExPath$" | Where-Object { $_.trim() -ne "" }
-                        if ($dirsExt1 -notmatch "\w{1,}" -or $dirsExt1 -gt 1000) {
+                    Write-Verbose -Message 'Determining valid search paths'
+                    $dirs = $dirs -replace "$regExPath$" | Where-Object { $_.trim() -ne '' }
+                    if ($dirsExt0 -match '\w{1,}') {
+                        $level = 'second'
+                        $dirsExt0 = $dirsExt0 -replace "$regExPath$" | Where-Object { $_.trim() -ne '' }
+                        if ($dirsExt1 -notmatch '\w{1,}' -or $dirsExt1 -gt 1000) {
                             $dirsExt1 = $dirsExt0
                             $dirsExt0 = $null
                         }
                         else {
-                            $dirsExt1 = $dirsExt1 -replace "$regExPath$" | Where-Object { $_.trim() -ne "" }
-                            $level = "third"
+                            $dirsExt1 = $dirsExt1 -replace "$regExPath$" | Where-Object { $_.trim() -ne '' }
+                            $level = 'third'
                         }
                     }
                     else {
@@ -164,7 +164,7 @@ function Find-File {
         [array]$out = Start-Multithreading -InputObject $dirsExt1 -ScriptBlock $block -ArgumentList (, $File) -MaxThreads $MaxThreads -Quiet:$Quiet | Sort-Object -Property File -Unique
 
         ## Search root of $Path and extended root directories
-        Write-Verbose -Message "Searching root path"
+        Write-Verbose -Message 'Searching root path'
         $in = (Get-ChildItem -Path $Path -Exclude "$Exclude" -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
         if ($null -eq $out -and $null -ne $in) {
             $in | ForEach-Object {
@@ -177,8 +177,8 @@ function Find-File {
             $out += $in
         }
 
-        if ($dirsExt0 -match "\w{1,}") {
-            Write-Verbose -Message "Searching second level directories"
+        if ($dirsExt0 -match '\w{1,}') {
+            Write-Verbose -Message 'Searching second level directories'
             $in0 = (Get-ChildItem -Path $dirsExt0 -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
             if ($null -eq $out -and $null -ne $in0) {
                 $in0 | ForEach-Object {
@@ -192,8 +192,8 @@ function Find-File {
             }
         }
 
-        if ($dirs -match "\w{1,}") {
-            Write-Verbose -Message "Searching root path directories"
+        if ($dirs -match '\w{1,}') {
+            Write-Verbose -Message 'Searching root path directories'
             $in1 = (Get-ChildItem -Path $dirs -Exclude "$Exclude" -Filter "*$File*" -File -Force -ErrorAction SilentlyContinue).FullName | Where-Object { $null -ne $_ }
             if ($null -eq $out -and $null -ne $in1) {
                 $in1 | ForEach-Object {
@@ -208,7 +208,7 @@ function Find-File {
         }
     }
     End {
-        if ($out -match "\w{1,}") {
+        if ($out -match '\w{1,}') {
             return $out
         }
         else {

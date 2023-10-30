@@ -37,7 +37,7 @@ function Get-NetworkInfo {
 
     DynamicParam {
         if (($PSVersionTable.PSVersion).ToString() -lt 7 -and $null -ne $env:WSL_DISTRO_NAME) {
-            throw [System.IO.IOException] "You are currently working in the Windows Subsystem for Linux with Core less than 7.x; this module does not currently work in WSL with Core less than 7.x"
+            throw [System.IO.IOException] 'You are currently working in the Windows Subsystem for Linux with Core less than 7.x; this module does not currently work in WSL with Core less than 7.x'
             exit
         }
         else {
@@ -52,10 +52,10 @@ function Get-NetworkInfo {
             $valSet0 = New-Object -Type System.Management.Automation.ValidateSetAttribute('IPv4', 'IPv6')
             $attributeCollection0.Add($attributes0)
             $attributeCollection0.Add($valSet0)
-            $dynParam0 = New-Object -Type System.Management.Automation.RuntimeDefinedParameter("AddressFamily", [string], $attributeCollection0)
+            $dynParam0 = New-Object -Type System.Management.Automation.RuntimeDefinedParameter('AddressFamily', [string], $attributeCollection0)
 
             ## Build the final paramaters
-            $paramDictionary.Add("AddressFamily", $dynParam0)
+            $paramDictionary.Add('AddressFamily', $dynParam0)
 
             if ($null -eq $env:WSL_DISTRO_NAME) {
                 ## OperationalStatus values are not returned in WSL
@@ -67,10 +67,10 @@ function Get-NetworkInfo {
                 $valSet1 = New-Object -Type System.Management.Automation.ValidateSetAttribute('UP', 'DOWN')
                 $attributeCollection1.Add($attributes1)
                 $attributeCollection1.Add($valSet1)
-                $dynParam1 = New-Object -Type System.Management.Automation.RuntimeDefinedParameter("OperationalStatus", [string], $attributeCollection1)
+                $dynParam1 = New-Object -Type System.Management.Automation.RuntimeDefinedParameter('OperationalStatus', [string], $attributeCollection1)
 
                 ## Build the final paramaters
-                $paramDictionary.Add("OperationalStatus", $dynParam1)
+                $paramDictionary.Add('OperationalStatus', $dynParam1)
             }
 
             return $paramDictionary
@@ -82,11 +82,11 @@ function Get-NetworkInfo {
         $OperationalStatus = $PSBoundParameters.OperationalStatus
 
         if ($AddressFamily) {
-            if ($AddressFamily -eq "IPv4") {
-                $AddrFam = "InterNetwork"
+            if ($AddressFamily -eq 'IPv4') {
+                $AddrFam = 'InterNetwork'
             }
-            if ($AddressFamily -eq "IPv6") {
-                $AddrFam = "InterNetworkV6"
+            if ($AddressFamily -eq 'IPv6') {
+                $AddrFam = 'InterNetworkV6'
             }
         }
     }
@@ -129,7 +129,7 @@ function Get-NetworkInfo {
                     foreach ($ippropsPropName in $ippropsPropertyNames) {
                         $FinalPSObjectMemberCheck = $($FinalPSObject | Get-Member -MemberType NoteProperty).Name
                         if ($FinalPSObjectMemberCheck -notcontains $ippropsPropName -and
-                            $ippropsPropName -ne "UnicastAddresses" -and $ippropsPropName -ne "MulticastAddresses") {
+                            $ippropsPropName -ne 'UnicastAddresses' -and $ippropsPropName -ne 'MulticastAddresses') {
                             $FinalPSObject | Add-Member -MemberType NoteProperty -Name $ippropsPropName -Value $($ipprops.$ippropsPropName)
                         }
                     }

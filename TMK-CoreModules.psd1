@@ -59,7 +59,7 @@
             ProjectUri               = 'https://github.com/tmknight/TMK-CoreModules'
 
             # Modules that must be imported into the global environment prior to importing this module
-            RequiredModules          = @("ActiveDirectory")
+            RequiredModules          = @('ActiveDirectory')
 
             # ReleaseNotes of this module
             ReleaseNotes             = '* 2017-03-15: tmknight: v1.0.0.0: First commit; Start-Multithreading function

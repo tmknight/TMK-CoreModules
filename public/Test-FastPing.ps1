@@ -29,7 +29,7 @@
 #>
 
 Function Test-FastPing {
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     Param(
         ## ComputerName, required.
         [Parameter(Mandatory = $true,
@@ -37,11 +37,11 @@ Function Test-FastPing {
             ValueFromPipelineByPropertyName = $true,
             Position = 0)]
         [ValidateScript( {
-                if ($_ -match "^\w" -or $_ -match "^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}") {
+                if ($_ -match '^\w' -or $_ -match '^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}') {
                     $true
                 }
                 else {
-                    Throw [System.Management.Automation.ValidationMetadataException] "Please only enter valid DNS name or IP address"
+                    Throw [System.Management.Automation.ValidationMetadataException] 'Please only enter valid DNS name or IP address'
                     Start-Sleep -Seconds 60
                 }
             } )]
@@ -63,7 +63,7 @@ Function Test-FastPing {
     )
 
     Begin {
-        $ErrorActionPreference = "SilentlyContinue"
+        $ErrorActionPreference = 'SilentlyContinue'
 
         ## Clear variables
         $vars = 'rslt'
@@ -83,11 +83,11 @@ Function Test-FastPing {
             try {
                 ## Attempt connection, 300 millisecond timeout, returns boolean
                 switch ($ping.send($cn, 300).status) {
-                    "Success" { Return $true }
+                    'Success' { Return $true }
                     Default {
                         ## Do one more should the first one fail
                         switch ($ping.send($cn, 300).status) {
-                            "Success" { Return $true }
+                            'Success' { Return $true }
                             Default { Return $false }
                         }
                     }
@@ -132,33 +132,33 @@ Function Test-FastPing {
             )
 
             if ($Lookup -eq $false) {
-                $ipv4 = "N/A"
-                $ipv6 = "N/A"
-                $hName = "N/A"
+                $ipv4 = 'N/A'
+                $ipv6 = 'N/A'
+                $hName = 'N/A'
             }
             elseif ($dns = Resolve-DnsName -Name $cn) {
                 ForEach ($rdn in $dns) {
-                    if ($rdn.type -eq "A") {
+                    if ($rdn.type -eq 'A') {
                         $ipv4 = $rdn.ipaddress
                     }
                     else {
-                        $ipv4 = "Unable to resolve"
+                        $ipv4 = 'Unable to resolve'
                     }
 
-                    if ($rdn.type -eq "AAAA") {
+                    if ($rdn.type -eq 'AAAA') {
                         $ipv6 = $rdn.ipaddress
                     }
                     else {
-                        $ipv6 = "Unable to resolve"
+                        $ipv6 = 'Unable to resolve'
                     }
 
                     ## Reverse lookup when cn is an IP address
                     switch -Regex ($cn) {
                         ## IP Address
-                        "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" {
+                        '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$' {
                             $hName = $rdn.NameHost
-                            $ipv4 = "N/A"
-                            $ipv6 = "N/A"
+                            $ipv4 = 'N/A'
+                            $ipv6 = 'N/A'
                         }
                         ## Hostname
                         Default {
@@ -168,9 +168,9 @@ Function Test-FastPing {
                 }
             }
             else {
-                $ipv4 = "Unable to resolve"
-                $ipv6 = "Unable to resolve"
-                $hName = "Unable to resolve"
+                $ipv4 = 'Unable to resolve'
+                $ipv6 = 'Unable to resolve'
+                $hName = 'Unable to resolve'
             }
             Return $ipv4, $ipv6, $hName
         }
@@ -189,8 +189,8 @@ Function Test-FastPing {
         }
 
         if ($Port) {
-            $rslt | Add-Member -MemberType NoteProperty -Name "RemotePort" -Value $Port
-            $rslt | Add-Member -MemberType NoteProperty -Name "TcpTestSucceeded" -Value (portKnock -cn $ComputerName -prt $Port)
+            $rslt | Add-Member -MemberType NoteProperty -Name 'RemotePort' -Value $Port
+            $rslt | Add-Member -MemberType NoteProperty -Name 'TcpTestSucceeded' -Value (portKnock -cn $ComputerName -prt $Port)
         }
 
     }
