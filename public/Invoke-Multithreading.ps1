@@ -144,7 +144,8 @@ function Invoke-Multithreading {
 
             # Create Runspace collection
             [Collections.Arraylist]$RunspaceCollection += [PSCustomObject] @{
-                Result = $PowerShell.BeginInvoke()
+                Result     = $PowerShell.BeginInvoke()
+                PowerShell = $PowerShell
             }
         }
 
