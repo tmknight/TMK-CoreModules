@@ -2,7 +2,7 @@
 
 [![GitHubPublish][GitHubPublishBadge]][GitHubPublishLink]
 
-Collection of PowerShell modules to ease system management in the enterprise.
+Collection of custom PowerShell modules to ease system management in the enterprise.
 
 The latest version is also available from [PowerShell Gallery][GitHubPublishLink]:
 
@@ -27,3 +27,4 @@ If TMK-CoreModules is already installed from PSGallery, obtain the latest releas
 
 [GitHubPublishBadge]: https://github.com/tmknight/TMK-CoreModules/actions/workflows/publish-module.yml/badge.svg
 [GitHubPublishLink]: https://www.powershellgallery.com/packages/TMK-CoreModules/
+
